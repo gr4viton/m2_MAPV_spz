@@ -33,7 +33,7 @@ nLptAll = 100; % database count
 
 randLpt = 1; % if try on different LPTs each time
 sumLpt = 5; % number of lpts to try
-nSubplots = 7; % number of subplots for each lpt
+nSubplots = 5; % number of subplots for each lpt
 
 FI=FI+1; FI_here=FI; figure(FI_here); SI = 0; SY = sumLpt; SX = nSubplots;
 for iLpt = 1:sumLpt % MAIN FOR START
@@ -49,7 +49,7 @@ for iLpt = 1:sumLpt % MAIN FOR START
 % original plot
 im = lpt;
 SI=SI+1; subplot2(SY,SX,SI);
-imshow(im,[]); title(strcat('orig')); axis tight
+imshow(im,[]); title(strcat('orig]]')); axis tight
 
 % ____________________________________________________
 % rotation
@@ -58,7 +58,7 @@ lpt = F10_rotation_settlement(lpt, innerDraw); figure(FI_here);
 
 im = lpt;
 SI=SI+1; subplot2(SY,SX,SI);
-imshow(im,[]); title(strcat('rotated')); axis tight
+imshow(im,[]); title(strcat('rotated]]')); axis tight
 
 % ____________________________________________________
 % background
@@ -67,23 +67,23 @@ lpt = F20_cut_off_bg(lpt, innerDraw); % cutting-off background
 
 im = lpt;
 SI=SI+1; subplot2(SY,SX,SI);
-imshow(im,[]); title(strcat('bg cutted')); axis tight
+imshow(im,[]); title(strcat('bg cutted]]')); axis tight
 
 % ____________________________________________________
-% other separation
-innerDraw = 1;
-lpt = F30_rgb_separation(lpt, innerDraw);
-
-im = lpt;
-SI=SI+1; subplot2(SY,SX,SI);
-imshow(im,[]); title(strcat('rotated')); axis tight
+% rgb separation
+% innerDraw = 1;
+% lpt = F30_rgb_separation(lpt, innerDraw);
+% 
+% im = lpt;
+% SI=SI+1; subplot2(SY,SX,SI);
+% imshow(im,[]); title(strcat('rgb separated]]')); axis tight
 % % ____________________________________________________
 % imchs = F40_fragmentation(lpt);
 % 
 % 
 % 
 
-if(SI>SX)&&(iLpt==1) % if one subplot row is not wide enaugh
+if(SI~=SX)&&(iLpt==1) % if one subplot row is not wide enaugh
    clc;
    disp(strcat('YOU should change [nSubplots] value to [', num2str(SI),']'));
    break;

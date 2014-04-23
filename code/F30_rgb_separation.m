@@ -1,4 +1,4 @@
-function [SPZ_final] = rgb_separation(SPZ_raw)
+function [SPZ_final] = F30_rgb_separation(SPZ_raw)
 
 %% function separates red, green and blue parts of picture SPZ_raw
 %% input - RGB picture

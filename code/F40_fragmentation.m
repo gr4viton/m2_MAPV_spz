@@ -1,4 +1,4 @@
-function [SPZ_final] = fragmentation(SPZ_raw)
+function [SPZ_final] = F40_fragmentation(SPZ_raw)
 %% picture fragmentation function
 %% input grayscale image
 %% output binary file (0, 255)

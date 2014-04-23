@@ -1,4 +1,4 @@
-function [ SPZ_cut_off ] = cutt_off_bg( SPZ_raw, draw )
+function [ SPZ_cut_off ] = F20_cutt_off_bg( SPZ_raw, draw )
 % Cuts of backround?
 % \param draw - whether to subplot informative data [1=yes]
 
@@ -110,11 +110,11 @@ if draw==1 % DRAW START
 % im=hist
 SI=SI+1; subplot2(SY,SX,SI);
 plot(hist_x, 1:size(SPZ_raw_original, 1));
-title(strcat('hist')); axis tight
+title(strcat('row hist')); axis tight
 
 SI=SI+1; subplot2(SY,SX,SI);
 plot(1:size(SPZ_raw_original, 2), hist_y);
-title(strcat('hist')); axis tight
+title(strcat('col hist')); axis tight
 
 end % DRAW END
 
