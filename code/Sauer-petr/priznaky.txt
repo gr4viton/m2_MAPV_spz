@@ -1,0 +1,36 @@
+0;12221 121;(12221 122 slovenska)
+1;12111 111;
+2;12111 232;(11111 232)!!'Z' krivosti, pak shodné se Z
+3;12121 221;
+4;11111 121;
+5;11211 232;
+6;12121 132;
+7;11111 221;
+8;12121 131;(12121 132)
+9;12121 231;(12221 231)
+A;11212 121;
+B;12121 131;
+C;(Neni v databazi)
+D;12221 121;!!'0' shodné s nulou
+E;11111 132;
+F;(Neni v databazi)
+G;(nekvalitni)
+H;22122 111;
+I;11111 111;
+J;11121 111;
+K;22122 112;(22122 122)
+L;11111 111;!!(shodné s I)
+M;22322 111;
+N;22122 111;
+O;(Neni v databazi) ale shodne s '0','D'
+P;12111 121;
+Q;(Neni v databazi)
+R;12122 122;
+S;12121 232;
+T;11111 111;
+U;22221 111;
+V;(Neni v databazi)
+W;(Neni v databazi)
+X;(Neni v databazi)
+Y;22111 111;(Neni v databazi)
+Z;11111 232;

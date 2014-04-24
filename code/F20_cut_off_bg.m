@@ -2,8 +2,7 @@ function [ SPZ_cut_off ] = F20_cutt_off_bg( SPZ_raw, draw )
 % Cuts of backround?
 % \param draw - whether to subplot informative data [1=yes]
 
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% BASIC DEFINITIONS
+%% BASIC DEFINITIONS
 F0_defines();
 
 %% for debugging only, comment when complete

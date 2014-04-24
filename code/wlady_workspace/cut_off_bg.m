@@ -1,6 +1,6 @@
-function [ SPZ_cut_off ] = cutt_off_bg( SPZ_raw )
-%UNTITLED2 Summary of this function goes here
-%   Detailed explanation goes here
+function [ SPZ_cut_off ] = cutt_off_bg( SPZ_raw, draw )
+% Cuts of backround?
+% \param draw - whether to subplot informative data [1=yes]
 
 %% for debugging only, comment when complete
     
@@ -10,6 +10,7 @@ function [ SPZ_cut_off ] = cutt_off_bg( SPZ_raw )
 %     SPZ_raw_original = SPZ_raw;
     
 %% BODY
+    SPZ_raw_original = SPZ_raw; % for draw==1
 
 %% vertical and horizontal histogram obtaining
     
@@ -104,16 +105,18 @@ function [ SPZ_cut_off ] = cutt_off_bg( SPZ_raw )
 
 %% plots
     
-%     figure(1)
-%     subplot(221)
-%     imshow(SPZ_raw_original);
-%     title('original');
-%     subplot(222)
-%     plot(hist_x, 1:size(SPZ_raw_original, 1))
-%     subplot(223)
-%     plot(1:size(SPZ_raw_original, 2), hist_y)
-%     subplot(224)
-%     imshow(SPZ_raw);
+if draw==1 % DRAW START
+% im=hist
+SI=SI+1; subplot2(SY,SX,SI);
+plot(hist_x, 1:size(SPZ_raw_original, 1));
+title(strcat('row hist')); axis tight
+
+SI=SI+1; subplot2(SY,SX,SI);
+plot(1:size(SPZ_raw_original, 2), hist_y);
+title(strcat('col hist')); axis tight
+
+end % DRAW END
+
 %     
 %     
 %     figure(2)

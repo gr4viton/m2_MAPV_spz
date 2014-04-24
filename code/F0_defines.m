@@ -17,6 +17,9 @@
 addpath(genpath('.\subtightplot'));
 addpath(genpath('..\SPZ_100'));
 addpath(genpath('.\wlady_workspace'));
+addpath(genpath('.\Petr_testy'));
+addpath(genpath('.\Sauer-petr'));
+addpath(genpath('.\dd'));
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % FUNCTION BINDING
@@ -29,3 +32,13 @@ global FI; % for storing of global figure index counter
 global SI;
 global SY;
 global SX;
+
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% FEATURE VECTOR DEFINITION
+
+% featureList = struct( ...
+%     'areaSumRel', 1,...
+%     'areaSumAbs', 1,...
+%     'circumfrnc', 1,...
+%     'eulerNum', 1 ...
+% );

@@ -57,7 +57,7 @@ imshow(im,[]); title(strcat('orig]]')); axis tight
 % ____________________________________________________
 % rotation
 innerDraw = 0;
-lpt = F10_rotation_settlement(lpt, innerDraw); figure(FI_here);
+lpt = F10_rotate(lpt, innerDraw); figure(FI_here);
 
 im = lpt;
 SI=SI+1; subplot2(SY,SX,SI);
@@ -66,25 +66,59 @@ imshow(im,[]); title(strcat('rotated]]')); axis tight
 % ____________________________________________________
 % background
 innerDraw = 1;
-lpt = F20_cut_off_bg(lpt, innerDraw); % cutting-off background
+lpt = F20_cut_off_bg(lpt, innerDraw); d
 
 im = lpt;
 SI=SI+1; subplot2(SY,SX,SI);
 imshow(im,[]); title(strcat('bg cutted]]')); axis tight
 
 % ____________________________________________________
-% rgb separation
-% innerDraw = 1;
-% lpt = F30_rgb_separation(lpt, innerDraw);
-% 
-% im = lpt;
-% SI=SI+1; subplot2(SY,SX,SI);
-% imshow(im,[]); title(strcat('rgb separated]]')); axis tight
-% % ____________________________________________________
-% imchs = F40_fragmentation(lpt);
-% 
-% 
-% 
+% F30_get_chars_only
+innerDraw = 1;
+lpt = F30_get_chars_only(lpt, innerDraw);
+
+im = lpt;
+SI=SI+1; subplot2(SY,SX,SI);
+imshow(im,[]); title(strcat('chars only]]')); axis tight
+
+% ____________________________________________________
+% F40_get_individual_chars
+innerDraw = 1;
+chims = F40_get_individual_chars(lpt, innerDraw); %returns cell array of char images
+
+for iChar=1:7
+    im = chims{iChar};
+    SI=SI+1; subplot2(SY,SX,SI); %rewrite to write all chars in one image
+    imshow(im,[]); title(strcat('im of char[',num2str(iChar),']')); axis tight
+end
+
+% ____________________________________________________
+% F50_create_feature_vector_for_char
+innerDraw = 1;
+
+for iChar=1:7
+    %returns cell array of feature vectors of inidividual characters
+    features{iChar} = F50_create_feature_vector_for_char(chims{iChar}, iChar, innerDraw); 
+end
+% ____________________________________________________
+% F60_assume_char.m
+innerDraw = 1;
+
+for iChar=1:7
+    %returns array of characters
+    char[iChar] = F60_assume_char(features{iChar}, iChar, innerDraw); 
+end
+
+
+% ____________________________________________________
+% F70_check_strLpt.m
+for iChar=1:7
+    %returns array of characters
+%     char[iChar] = F60_assume_char(features{iChar}, iChar, innerDraw); 
+% porovnani se spravnou hodnotou a vypsani uspìl neuspìl popøípadì pøidání
+% do statistiky a výpoèet bodù za projekt..
+end
+
 
 if(SI~=SX)&&(iLpt==1) % if one subplot row is not wide enaugh
    clc;
