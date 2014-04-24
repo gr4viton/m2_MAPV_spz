@@ -1,22 +1,7 @@
-% /***********
-% \project    MAPV - Projekt 2 - Separace a rozpoznání znakù SPZ
-% \url        <http://midas.uamt.feec.vutbr.cz/APV/projects/project_2.php>
-% \authors    xdavid10, xnovac10, xsauer01, xvlada00 @ FEEC-VUTBR
-% \filename	  .m
-% \contacts	  Bc. DAVIDEK Daniel <danieldavidek@gmail.com>
-%             Bc. NOVACEK Petr   <xnovac10@stud.feec.vutbr.cz>
-%             Bc. SAUER Petr     <xsauer01@stud.feec.vutbr.cz>
-%             Bc. VLADAR Martin  <xvlada00@stud.feec.vutbr.cz>
-% \date		  15-04-2014
-% \license    ?
-% ***********/
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function [SPZ_final] = F40_fragmentation(SPZ_raw, draw)
-
-% picture fragmentation function?what does it fragment?lpt to indiv chars?
-% input grayscale image
-% \param draw - whether to subplot informative data [1=yes]
-% output binary file (0, 255)
+function [SPZ_final] = fragmentation(SPZ_raw)
+%% picture fragmentation function
+%% input grayscale image
+%% output binary file (0, 255)
 
 %% BODY
     
@@ -54,7 +39,7 @@ function [SPZ_final] = F40_fragmentation(SPZ_raw, draw)
             x2 = sizes_x(i+1);
             y1 = sizes_y(j);
             y2 = sizes_y(j+1);
-            SPZ_final(x1:x2, y1:y2) = F43_segment_thresholding(SPZ_raw(x1:x2, y1:y2));
+            SPZ_final(x1:x2, y1:y2) = segment_thresholding(SPZ_raw(x1:x2, y1:y2));
         end % for j
     end %for i
     

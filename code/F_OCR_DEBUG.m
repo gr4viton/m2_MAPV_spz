@@ -36,7 +36,10 @@ sumLpt = 5; % number of lpts to try
 nSubplots = 5; % number of subplots for each lpt
 
 FI=FI+1; FI_here=FI; figure(FI_here); SI = 0; SY = sumLpt; SX = nSubplots;
-for iLpt = 1:sumLpt % MAIN FOR START
+
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% MAIN FOR LOOP
+for iLpt = 1:sumLpt % MAIN FOR LOOP START
 %% picture aquisition
     if(randLpt == 1)
         numLpt = ceil((nLptAll-1)*rand(1) + 1); % random from <1;100>
@@ -89,7 +92,7 @@ if(SI~=SX)&&(iLpt==1) % if one subplot row is not wide enaugh
    break;
 end
 
-end % MAIN FOR END
+end % MAIN FOR LOOP END
 
 
 

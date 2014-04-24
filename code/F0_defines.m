@@ -16,6 +16,7 @@
 % EXTERNAL PATHS
 addpath(genpath('.\subtightplot'));
 addpath(genpath('..\SPZ_100'));
+addpath(genpath('.\wlady_workspace'));
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % FUNCTION BINDING
