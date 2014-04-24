@@ -83,20 +83,13 @@ im = colOfLpt ;
 SI=SI+1; subplot2(SY,SX,SI);
 imshow(im,[]); title(strcat('colOfLpt')); axis tight
 
-inv_colOfLpt = imcomplement(colOfLpt);
-
 % find_color(colOfLpt,[],0.2, []);
 col = color('red');
-col = imcomplement(col);
-maskR = find_color(inv_colOfLpt,[],0.2, col');
-
+maskR = find_color(colOfLpt,[],0.2, col');
 col = color('green');
-col = imcomplement(col);
-maskG = find_color(inv_colOfLpt,[],0.2, col');
-
-col = color('blue');
-col = imcomplement(col);
-maskB = find_color(inv_colOfLpt,[],0.2, col');
+maskG = find_color(colOfLpt,[],0.2, col');
+col = color('red');
+maskB = find_color(colOfLpt,[],0.2, col');
 % maskR = zeros(size(colOfLpt));
 % maskB = maskR;
 % maskG = maskB;

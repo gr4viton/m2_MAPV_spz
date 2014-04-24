@@ -1,0 +1,19 @@
+function [chims] = F40_getCharIms(lpt, draw)
+% returns cell array of images containging individual char images in bw
+% \param lpt - bw image with only the text
+% \param draw - whether to subplot informative data [1=yes]
+
+%% BASIC DEFINITIONS
+F0_defines();
+w = size(lpt,1);
+h = size(lpt,2);
+
+for i=1:7
+    chims{i} = ceil(i*ih/7)
+end
+
+% chims = (SPZ_raw, draw);
+    
+%% end of function
+end
+

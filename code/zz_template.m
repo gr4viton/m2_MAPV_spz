@@ -1,12 +1,9 @@
 % /***********
 % \project    MAPV - Projekt 2 - Separace a rozpoznání znakù SPZ
 % \url        <http://midas.uamt.feec.vutbr.cz/APV/projects/project_2.php>
-% \authors    xdavid10, xnovac10, xsauer01, xvlada00 @ FEEC-VUTBR
+% \authors    xdavid10 @ FEEC-VUTBR
 % \filename	  .m
 % \contacts	  Bc. DAVIDEK Daniel <danieldavidek@gmail.com>
-%             Bc. NOVACEK Petr   <xnovac10@stud.feec.vutbr.cz>
-%             Bc. SAUER Petr     <xsauer01@stud.feec.vutbr.cz>
-%             Bc. VLADAR Martin  <xvlada00@stud.feec.vutbr.cz>
 % \date		  15-04-2014
 % \license    ?
 % ***********/

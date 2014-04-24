@@ -1,4 +1,4 @@
-function [char] = F60_assume_char(features, iChar, draw)
+function [char] = F60_assume_char(ft, iChar, draw)
 % returns array of characters
 % \param features - feature vector of one character
 % \param iChar - number of the character -> to utilize aprior syntax
@@ -10,18 +10,21 @@ F0_defines();
 % apriory syntax =  #X# #### ?? => # number; X alfa-character
 
 % the definition should be in F0_defines.m
-% features = struct( ...
+% ft = struct( ...
 %     'areaSumRel', 1,...
 %     'areaSumAbs', 1,...
 %     'circumfrnc', 1,...
 %     'eulerNum', 1 ...
 % );
 
-if(iChar == 4:7)
-    if(features.areaSumRel == 0.5)
+pravdepodobnosti
 
+if(iChar == 4:7)
+    if(ft.point == 1)
         char = '6';
     end
+%     if(ft.areaSumRel == 0.5)
+
 end
 %% end of function
 end

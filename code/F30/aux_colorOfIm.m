@@ -9,22 +9,14 @@
 % ***********/
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% EXTERNAL PATHS
-addpath('.\addons');
-addpath('.\F30');
-% addpath(genpath('..\SPZ_100'));
+function [ colOfIm ] = aux_colorOfIm( lptRgb )
+%% \retval only color of the image - grayscale part would be black
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% FUNCTION BINDING
-% subtightplot
-subplot2 = @(m,n,p) subtightplot (m, n, p, [0.05 0.01], [0.05 0.01], [0.01 0.01]);
-
+% BASIC DEFINITIONS
+F0_defines();
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% GLOBAL VARIABLES
-global FI; % for storing of global figure index counter
-global SI;
-global SY;
-global SX;
 
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% FEATURE VECTOR DEFINITION
+lptGray = rgb2gray(lptRgb);
+rgbGrayLpt = repmat(lptGray(:,:),[1,1,3]);
+colOfIm = lptRgb - rgbGrayLpt;
