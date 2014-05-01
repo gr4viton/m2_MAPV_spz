@@ -10,6 +10,7 @@ addpath('..\SPZ_100');
 
 addpath('.\F30');
 addpath('.\F40');
+addpath('.\F60');
 
 FI = 0; % initialization - only on one place - delete when OCR_LPT works
 ft = struct( ...
@@ -23,3 +24,5 @@ ft = struct( ...
 set(0,'defaultLineLineWidth',2)
 set(0,'DefaultAxesColorOrder',[1 0 0;0 1 0;0 0 1]);
 
+
+global disp2_level;

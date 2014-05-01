@@ -1,0 +1,39 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Najednou mì napadlo, že se normálnì bojím dìlat pøímo v Dropboxu, ta hrozba
+že nìkdo nìco otevøete když to edituju, a možnost že pøíjdu o data která už 
+jsem vytvoøil.. no fuj..
+
+budu to vytváøet usebe, a pak sem dycky postnu doplnìnou èást..
+
+pokud v ní nìco zmìníte, prosím napište to sem.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Zaènìte otevøením skriptu 
+F_OCR_DEBUG.m 	// pokud ještì není hotovo
+F_OCR_all.m	// pokud už fungují jednotlivé funkce volané z F_OCR_LPT.m
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+jednotlive funkce mají v názvu prefix dle toho do ktere fáze patøí
+F## - Fáze #
+____________________________________________________
+F10_ -> F19_
+separace textu od pozadí a jeho pøedzpracování
+= odstranìní okrajù a pozadí
+____________________________________________________
+F40_ -> F49_
+separace jednotlivých písmen
+____________________________________________________
+F50_ -> F59_
+vytvoøení pøíznakù jednotlivým písmenùm (s apriorní znalostí syntaxe = #X# ####)
+____________________________________________________
+F60_ -> F69_
+urèení znaku s urèitou pravdìpodobností (s apriorní znalostí syntaxe = #X# ####)
+____________________________________________________
+F70_ -> F79_
+porovnání se správnou hodnotou
+
+...
+____________________________________________________
+FA0_
+____________________________________________________
+FB0_

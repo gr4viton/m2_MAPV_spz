@@ -29,6 +29,7 @@ F0_initials();
 
 % for debug reasons is the main for loop here - afterwards in F_OCR_all.m
 
+disp2_level = 3; % how deep to display on console
 nLptAll = 100; % database count
 
 whichLpt = 2;    % if try on different LPTs each time
@@ -52,6 +53,7 @@ gpLpt = [67 41 40 61];
 
 % gpLpt = cat(2,gpSame );
 gpLpt = cat(2,gpBwingGood );
+% gpLpt = cat(2,gpBwingGood(1:5) );
 % gpLpt = cat(2,gpShadowy, gpNotBwingRight);
 % gpLpt = cat(2,gpShadowy );
 % gpLpt = cat(2,gpDisappears );
@@ -64,6 +66,9 @@ if whichLpt  == 2
 end
 % traditional = [l->r] -> [u->d]
 % FI=FI+1; FI_here=FI; figure(FI_here); SI = 0; SY = sumLpt; SX = nSubplots;
+
+% all the [chim]s of processed lpts
+chimzy = [];
 
 % better for lpt = [u->d] -> [l->r] 
 FI=FI+1; FI_here=FI; figure(FI_here); SI = 0; SY = nSubplots; SX = sumLpt;
@@ -134,36 +139,9 @@ nChR = 4;
 lchim = F40_getCharIms(lRgb, nChL, draw); 
 rchim = F40_getCharIms(rRgb, nChR, draw); 
 
+% get cell arrays of both halfs after one another
 chim = cat(2,lchim, rchim);
-% imfuse
 
-imPulp = [chim{1}];
-for iChar=2:7
-    im = [chim{iChar}];
-    % imPulp = blkdiag(imPulp,im);        
-    ih = size(im,1);
-    ip = size(imPulp,1);
-    if ih>ip
-        iw = size(imPulp,2);
-        imPulp = cat(1,imPulp,ones(ih-ip,iw));
-    elseif ih<ip
-        iw = size(im,2);
-        im = cat(1,im,ones(ip-ih,iw));
-    end
-    L = GET_whiteLineVBw(imPulp);
-    imPulp = cat(2,imPulp,L,im);
-    % imPulp = imfuse(imPulp,im,'montage');
-end
-
-% image
-% hi = size(inRgb,1);
-% % wi = size(in,2);
-% wL = 2;
-% chL = repmat(255*ones(hi,1),1,wL); %=imLineChannel
-% L = cat(3,chL, chL, chL); %=imLineRgb
-
-
-aux_imprintS(imPulp, strcat('all chims') );
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % F50____________________________________________________
@@ -214,29 +192,38 @@ draw = 1;
 %     features{iChar} = F50_getFeaturesOfChar(chim{iChar}, iChar, draw); 
 % end
 % F60____________________________________________________
+chimzy = cat(2,chimzy,chim);
 draw = 1;
-
+disp2(1,sprintf('#%3i Fatures:',numLpt));
 char = '       ';
-for iChar=1:7
+for iCh=1:7
     %returns array of characters
-    char(iChar) = F60_whichChar( features{iChar}, iChar, draw); 
+    [char(iCh), P(:,1:2,iCh)] = F60_whichChar( chim{iCh}, iCh, draw); 
 end
 
+% print all char images in one pulp image
+aux_imprintPulp(chim);
+title(sprintf('#%i = %s',numLpt,char));
+
+%% ____________________________________________________
+% time measurement
 tim(iLpt)=toc();
 endIn = mean(tim(1:iLpt)) * (sumLpt - iLpt);
 timSum = sum(tim);
 timEnd = endIn + timSum;
+
 % disp(sprintf('This lpt took [%.2f]s, estimated end in [%.2f]s',...
 %     tim(iLpt),endIn));
-disp(sprintf('#%3i [%.2f]s, passed [%.2f]s = [%.1f]%%, end in [%.2f]s',...
-    numLpt, tim(iLpt),timSum, timSum/timEnd*100, endIn));
-disp(sprintf('LPTstr = [%s]',char));
-title(char);
+% disp(sprintf('#%3i [%.2f]s, passed [%.2f]s = [%.1f]%%, end in [%.2f]s',...
+%     numLpt, tim(iLpt),timSum, timSum/timEnd*100, endIn));
+disp2(1,sprintf('#%3i took [%.2f]s, [%.2f/%.2f]s == [%.1f]%% | endin''[%.2f]s',...
+    numLpt, tim(iLpt),timSum, timEnd, timSum/timEnd*100, -endIn));
+disp2(1,sprintf('LPTstr = >>>[%s]<<<',char));
 % ____________________________________________________
 
 % ____________________________________________________
 % F70_check_strLpt.m
-for iChar=1:7
+for iCh=1:7
     %returns array of characters
 %     char[iChar] = F60_assume_char(features{iChar}, iChar, innerDraw); 
 % porovnani se spravnou hodnotou a vypsani uspìl neuspìl popøípadì pøidání
@@ -245,8 +232,8 @@ end
 
 % if(SI~=SX)&&(iLpt==1) % if one subplot row is not wide enaugh
 if(SI~=SY)&&(iLpt==1) % if one subplot row is not wide enaugh
-   clc;
-   disp(sprintf('YOU should change [nSubplots] value to [%i]', SI ));
+%    clc;
+   disp2(1,sprintf('YOU should change [nSubplots] value to [%i]', SI ));
    
 %    break;
     nSubplots = SI;
@@ -258,9 +245,10 @@ end % MAIN FOR LOOP END
 
 totTim = sum(tim);
 timMeanLpt = mean(tim);
-disp(sprintf('Total time of [%i]lpts is [%.2f]s, mean is [%.2f]s',...
+disp2(1,sprintf('Total time of [%i]lpts is [%.2f]s, mean is [%.2f]s',...
     sumLpt, totTim, timMeanLpt ));
 
+% save('chimzy.dat', chimzy, -mat)
 % END OF OCR
 
 

@@ -50,14 +50,13 @@ dispFtP = @(name,val) disp2(3,sprintf('%s [%0.2f]%%', name, val*100));
 
 tit = strcat(str_iCh,'START');
 aux_printProb(P,gpChars); title(tit);
-ftCh = []; % 
-ftNames = {}; % vector of string for names of individual features
+ftCh = [];
 
 %% 'EulerNumber'
 %  the total number of objects in the image 
 % minus the total number of holes in those objects
 ftVal = s.EulerNumber;
-[ftCh, ftNames] = FT_addFeature(ftCh,'EulerNumber',ftVal);
+ftCh = FT_addFeature(ftCh,'EulerNumber',ftVal);
 
 %% 'Centroid' 
 % [position of centroid] vs [pos of centroid of convex / closed char]
