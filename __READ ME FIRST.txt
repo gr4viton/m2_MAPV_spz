@@ -16,25 +16,20 @@ F_OCR_all.m	// pokud už fungují jednotlivé funkce volané z F_OCR_LPT.m
 jednotlive funkce mají v názvu prefix dle toho do ktere fáze patøí
 F## - Fáze #
 ____________________________________________________
-F10_
-narovnání 
+F10_ 
+separace textu od pozadí a jeho pøedzpracování
+= odstranìní okrajù a pozadí
 ____________________________________________________
-F20_
-odstranìní okrajù a pozadí
-____________________________________________________
-F30_
-odstranìní všeho kromì písmen
-____________________________________________________
-F40_
+F20_ 
 separace jednotlivých písmen
 ____________________________________________________
-F50_
+F50_ 
 vytvoøení pøíznakù jednotlivým písmenùm (s apriorní znalostí syntaxe = #X# ####)
 ____________________________________________________
-F60_
-urèení znaku s urèitou pravdìpodobností
+F60_ 
+urèení znaku s urèitou pravdìpodobností (s apriorní znalostí syntaxe = #X# ####)
 ____________________________________________________
-F70_
+F70_ 
 porovnání se správnou hodnotou
 
 ...

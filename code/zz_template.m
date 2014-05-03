@@ -1,14 +1,3 @@
-% /***********
-% \project    MAPV - Projekt 2 - Separace a rozpoznání znakù SPZ
-% \url        <http://midas.uamt.feec.vutbr.cz/APV/projects/project_2.php>
-% \authors    xdavid10 @ FEEC-VUTBR
-% \filename	  .m
-% \contacts	  Bc. DAVIDEK Daniel <danieldavidek@gmail.com>
-% \date		  15-04-2014
-% \license    ?
-% ***********/
-
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function [ out ] = fcn_name ( in, draw )
 %% brief..
 % \param draw - whether to subplot informative data [1=yes]
@@ -35,8 +24,6 @@ F0_defines();
 
 
 % if draw==1 % DRAW START
-% im = SPZ_raw;
-% SI=SI+1; subplot2(SY,SX,SI);
-% imshow(im,[]); title(strcat('Raw spz')); axis tight
-% 
+% im = out; 
+% aux_imprint(im, strcat('closed colOfLpt'));
 % end % DRAW END

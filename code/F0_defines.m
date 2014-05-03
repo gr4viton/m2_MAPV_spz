@@ -10,21 +10,24 @@
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % EXTERNAL PATHS
-addpath('.\addons');
 addpath('.\F30');
+% addpath('..');
 % addpath(genpath('..\SPZ_100'));
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% FUNCTION BINDING
-% subtightplot
-subplot2 = @(m,n,p) subtightplot (m, n, p, [0.05 0.01], [0.05 0.01], [0.01 0.01]);
-
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % GLOBAL VARIABLES
-global FI; % for storing of global figure index counter
-global SI;
-global SY;
-global SX;
+% global FI; % for storing of global figure index counter
+
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % FEATURE VECTOR DEFINITION
+
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% TROUBLE MAKERS
+% ____________________________________________________
+% rotate
+% 6,45
+% ____________________________________________________
+% good now?
+% search for blue eurostrip - blueish = 20,26,37,34
+

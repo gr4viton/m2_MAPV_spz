@@ -1,23 +1,11 @@
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% /***********
-% \project    MAPV - Projekt 2 - Separace a rozpoznání znakù SPZ
-% \url        <http://midas.uamt.feec.vutbr.cz/APV/projects/project_2.php>
-% \authors    xdavid10 @ FEEC-VUTBR
-% \filename	  .m
-% \contacts	  Bc. DAVIDEK Daniel <danieldavidek@gmail.com>
-% \date		  15-04-2014
-% \license    ?
-% ***********/
-
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function [ outAngle ] = rotate_angFrameBorder ( lptRgb, draw )
 %% find angle by detection of frame-border horizontal lines
 % \param draw - whether to subplot informative data [1=yes]
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % BASIC DEFINITIONS
-F0_defines();
-
+% F0_defines();
+% 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % try to find border horizontal line
 
@@ -73,12 +61,10 @@ angMax = 10; %[°]
 if draw==1 % DRAW START
 % gaussian    
     im = glpt;
-    SI=SI+1; subplot2(SY,SX,SI);
-    imshow(im,[]); title(strcat('gaussian')); axis tight
+    aux_imprint(im, strcat('gaussian'));
 % edge
     im = E;
-    SI=SI+1; subplot2(SY,SX,SI);
-    imshow(im,[]); title(strcat('edges')); axis tight
+    aux_imprint(im, strcat('edges'));
 % houghlines abscissas
     for i=1:length(L)
        cols = hsv(length(L));

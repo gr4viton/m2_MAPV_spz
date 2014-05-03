@@ -1,14 +1,3 @@
-% /***********
-% \project    MAPV - Projekt 2 - Separace a rozpoznání znakù SPZ
-% \url        <http://midas.uamt.feec.vutbr.cz/APV/projects/project_2.php>
-% \authors    xdavid10 @ FEEC-VUTBR
-% \filename	  .m
-% \contacts	  Bc. DAVIDEK Daniel <danieldavidek@gmail.com>
-% \date		  15-04-2014
-% \license    ?
-% ***********/
-
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function [ outLpt ] = rotate ( lptRgb, draw )
 %% Counts the probable lpt angle of rotation and reverse it 
 % in future maybe: try to reduce skeweness
@@ -17,9 +6,10 @@ function [ outLpt ] = rotate ( lptRgb, draw )
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % BASIC DEFINITIONS
-F0_defines();
+% F0_defines();
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+% problem makers lpt number
+% 6, 45
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % try to find left blue strip 
@@ -68,8 +58,7 @@ end
 
 if draw==1 % DRAW START
     im = lptRgb;
-    SI=SI+1; subplot2(SY,SX,SI);
-    imshow(im,[]); title(strcat('rotated lpt')); axis tight
+    aux_imprint(im, strcat('rotated lpt'));
 end % DRAW END
 
 outLpt = lptRgb;
