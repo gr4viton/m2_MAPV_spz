@@ -17,15 +17,11 @@ bw = im2bw(im,level);
 pxTresh = ceil(px / 50);
 bw = bwareaopen(bw, pxTresh);
 
-cc = bwconncomp(bw, 4);
-numPixels = cellfun(@numel, cc.PixelIdxList);
-[biggest, idx] = max(numPixels);
-bw_notBiggest = bw;
-bw_notBiggest(cc.PixelIdxList{idx}) = 0;
+% get biggest object
+[bw_biggest, cc] = GET_biggest(bw);
+redDot = bw_biggest;
 
-% cc now have only object with most pixels
-redDot = bw - bw_notBiggest;
-
+%% individual region properties
 s_cent = regionprops(redDot,'Centroid');
 cent = s_cent.Centroid;
 % cent = x,y
@@ -34,9 +30,10 @@ s_bb = regionprops(redDot,'BoundingBox');
 bb = s_bb.BoundingBox;
 % bb== x,y,w,h
 % to cut
+xoff = 3; % empirical 
 x = bb(1);
 w = bb(3);
-off = [ceil(x), ceil(x + w)] ;
+off = [floor(x-xoff), ceil(x + w)] ;
 
 if draw==1
     im = bw;

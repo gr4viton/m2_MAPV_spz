@@ -21,8 +21,7 @@ lRgb = lptRgb(:, 1:voff(1), :);
 rRgb = lptRgb(:, voff(2):end, :);
     
 if draw==1
-    im = lRgb;
-    aux_imprint(im, strcat('left') );
-    im = rRgb;
-    aux_imprint(im, strcat('right') );
+    L = GET_whiteLineVRgb(lRgb);
+    im = cat(2,lRgb,L,rRgb);
+    aux_imprint(im, strcat('left|right') );
 end

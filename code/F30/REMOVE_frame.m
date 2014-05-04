@@ -11,23 +11,6 @@ function [ lptRgb ] = REMOVE_frame ( lptRgb, draw )
 
 lptRgb = lptRgb;
 
-%% DELETE THIS IF YOU DO NOT NEED IT
-
-% FI=FI+1; figure(FI); SI = 0; SY = 1; SX = 3;
-% FI=FI+1; FI_here=FI; figure(FI_here); SI = 0; SY = 1; SX = 3;
-
-% im = some_image;
-% SI=SI+1; subplot2(SY,SX,SI);
-% imshow(im,[]); title(strcat('im_title')); axis tight
-
-
-% if draw==1 % DRAW START
-% im = SPZ_raw;
-% SI=SI+1; subplot2(SY,SX,SI);
-% imshow(im,[]); title(strcat('Raw spz')); axis tight
-% 
-% end % DRAW END
-
 
 %% not used
 

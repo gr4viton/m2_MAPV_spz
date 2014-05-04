@@ -15,17 +15,14 @@ bw = im2bw(im,level);
 pxTresh = ceil(px / 20);
 bw = bwareaopen(bw, pxTresh);
 
-cc = bwconncomp(bw, 4);
-numPixels = cellfun(@numel,cc.PixelIdxList);
-[biggest,idx] = max(numPixels);
-bw_notBiggest = bw;
-bw_notBiggest(cc.PixelIdxList{idx}) = 0;
+% get biggest object
+[bw_biggest, cc] = GET_biggest(bw);
+euro = bw_biggest;
 
-% cc now have only object with most pixels
-euro = bw - bw_notBiggest;
 % take only uppar part - ignore lower blue strip
 euro = euro(1:ceil(end/2),:);
 
+%% individual region properties
 s_ori = regionprops(euro,'Orientation');
 ori = s_ori.Orientation;
 s_bb = regionprops(euro,'BoundingBox');

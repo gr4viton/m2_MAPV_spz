@@ -12,6 +12,9 @@ global ft;
 
 % the definition should be in F0_defines.m
 
+%% B vs 8
+% mirroring
+% left half center px count vs right..
 
 % okraj
 % hlavní poloosa - natoèit

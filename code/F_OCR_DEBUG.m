@@ -20,6 +20,10 @@ close all; clear; clc;
 % BASIC DEFINITIONS
 F0_initials();
 
+% on start of every function draw=draw-1;
+% if draw>0
+% -> than it means how many levels will it draw
+
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % MAIN OCR FCNS CALLING
 
@@ -33,17 +37,22 @@ sumLpt = 5;     % number of lpts to try
 nSubplots = 11;  % number of subplots for each lpt
 was = [-1];      % indexes of OCRed lpts
 
-gpTilted = [9,14,24,25,33,43,46,48,50,55];
+gpTilted = [9 14 24 25 33 43 46 48 50 55];
 gpBadHalves = [21];
-gpSmallBlue = [43,70];
-gpNoDots = [80,16,66,69,40,66,33,96,39,80,41,31];
-gpDots = [81,43,92,5,86,94,77,75,18,71,29,6,11,83,70,45,20,3,76,67,63,56];
-gpDisappears = [29,39]; % in DIsappear colorfull
-gpShadowy = [ 41,40, 13 ];
-gpSame = [ 40,101, 13,102 ];
-gpLpt = [67,41,40,61];
+gpSmallBlue = [43 70];
+gpNoDots = [80 16 66 69 40 66 33 96 39 80 41 31];
+gpDots = [81 43 92 5 86 94 77 75 18 71 29 6 11 83 70 45 20 3 76 67 63 56];
+gpDisappears = [29 39]; % in DIsappear colorfull
+gpShadowy = [ 41 40 13 ];
+gpSame = [ 40 101 13 102 ];
+gpSlovak = [52];
+gpBwingBad = [1 6 24 38 43 47 51 52 56 70 76 82 89 91 98 21 44 64 73];
+gpBwingGood = [40 17 79 37 74 2 27 33 49 54 60 61 71 92 100];
+gpLpt = [67 41 40 61];
 
-gpLpt = cat(2,gpSame );
+% gpLpt = cat(2,gpSame );
+gpLpt = cat(2,gpBwingGood );
+% gpLpt = cat(2,gpShadowy, gpNotBwingRight);
 % gpLpt = cat(2,gpShadowy );
 % gpLpt = cat(2,gpDisappears );
 % gpLpt = cat(2,gpDots);
@@ -91,19 +100,9 @@ aux_imprint(im, strcat('orig',num2str(numLpt),']]') );
 draw = 0;
 % lpt = F30_getCleanText(lpt, innerDraw);
 
-% ____________________________________________________
-% preprocess
-
-% (stretch contrast)
-% (stretch hsv)
-
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % rotate
 lptRgb = rotate(lptRgb,draw);
-% im = lptRgb;
-% aux_imprint(im, strcat('rotated') );
-
-draw = 0;
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % remove frame
@@ -111,235 +110,83 @@ draw = 0;
 
 %% remove horizontal margin = vertical left/right-strips
 lptRgb = REMOVE_horizontalMargins(lptRgb, draw);
-im = lptRgb;
-aux_imprint(im, strcat('hmargin') );
+% im = lptRgb;
+% aux_imprint(im, strcat('hmargin') );
 
 %% Split lpt image into 2 parts
 [lRgb,rRgb] = SPLIT_lpt(lptRgb, draw);
-
-im = lRgb;
-aux_imprint(im, strcat('left') );
-% im = rRgb;
-% aux_imprint(im, strcat('right') );
     
-%% Make colors disappear into white
-% lRgb = DISAPPEAR_colors(lRgb,draw);
-
-lptRgb = lRgb;
-
-
-% % creates color only im
-% % lptC = aux_colorOfIm(lptRgb,draw);
-% lptC = MAKE_lptC(lptRgb,draw);
-% 
-% im = lptC;
-% aux_imprint(im,'lptC')
-% 
-% % lptRgb = lptRgb - lptC;
-% % im = lptRgb;
-% % aux_imprint(im,'colorless')
-
-%% filter background through saturation
-% make black areas blackier and compact
-draw=0;
-lptRgb = aux_rgb2grayMax(lptRgb,draw);
-    im = lptRgb;
-    aux_imprint(im,'lptRgb')
-%% find frame by morph closing    
-
-% thresh
-lptG = rgb2gray(lptRgb);
-lptG = imadjust(lptG);
-    im = lptG;
-    aux_imprint(im,'adjusted')
-
-% level from hsv(val)??
-lptHsv = rgb2hsv(lptRgb);
-level = graythresh(lptHsv(:,:,2));
-%     im = lptHsv(:,:,3);
-%     aux_imprintS(im,'hsv3')
-% bw = im2bw(lptG,level);
-%     im = bw;
-%     aux_imprintS(im,'bwHsv')
-coef = 1.2;
-level=level*coef;
-bw = im2bw(lptG,level);
-    im = bw;
-    aux_imprintS(im,'bwHsvCoef')
+    L = GET_whiteLineVRgb(lRgb);
+    im = cat(2,lRgb,L,rRgb);
+    aux_imprint(im, strcat('left|right') );
     
-% % or not
-% level = graythresh(lptG);
-% 
-% 
-% bw = im2bw(lptG,level);
-%     im = bw;
-%     aux_imprintS(im,'bw')
+%% Clean splitted text images
+draw = 0;
+lRgb = F30_GET_cleanText(lRgb,draw);
+rRgb = F30_GET_cleanText(rRgb,draw);
 
-% add black frame around
-lptBw = FRAME_image(bw,draw);
-    im = lptBw;
-    aux_imprintS(im,'bw')
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% separate chars = imchars  
 
-% morph - open then close better
-ih = size(lptRgb,1);
-iw = size(lptRgb,2);
+nChL = 3;
+nChR = 4;
+%returns cell array of char images
+lchim = F40_getCharIms(lRgb, nChL, draw); 
+rchim = F40_getCharIms(rRgb, nChR, draw); 
 
-    
-% do morph opening
-R = ceil(ih / 40);
-SE = strel('disk',R,4);
-lptBw = imopen(lptBw, SE);
-    lptBwO=lptBw;
-% do morph closing
-R = ceil(ih / 40);
-SE = strel('disk',R,4);
-lptBw = imclose(lptBw, SE);
+chim = cat(2,lchim, rchim);
+% imfuse
 
-    im = lptBwO;
-    aux_imprintS(im,'opening')
-    im = lptBw;
-    aux_imprintS(im,'closed')
-    
-% find biggest (pxs) object
-% delet it
+imPulp = [chim{1}];
+for iChar=2:7
+    im = [chim{iChar}];
+    % imPulp = blkdiag(imPulp,im);        
+    ih = size(im,1);
+    ip = size(imPulp,1);
+    if ih>ip
+        iw = size(imPulp,2);
+        imPulp = cat(1,imPulp,ones(ih-ip,iw));
+    elseif ih<ip
+        iw = size(im,2);
+        im = cat(1,im,ones(ip-ih,iw));
+    end
+    L = GET_whiteLineVBw(imPulp);
+    imPulp = cat(2,imPulp,L,im);
+    % imPulp = imfuse(imPulp,im,'montage');
+end
 
-%% find frame by projections   
+% image
+% hi = size(inRgb,1);
+% % wi = size(in,2);
+% wL = 2;
+% chL = repmat(255*ones(hi,1),1,wL); %=imLineChannel
+% L = cat(3,chL, chL, chL); %=imLineRgb
+
+
+aux_imprintS(imPulp, strcat('all chims') );
+
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% F50____________________________________________________
+draw = 1;
+
+% individual region properties
 
 % ____________________________________________________
 % horizontal and vertical projection
 
 
 % xprjC,yprjC - projections of [lptC]
-norma = 0;
-xprjC = aux_projectDown(lptBw,               norma);
-yprjC = aux_projectDown(imrotate(lptBw,-90), norma);
-xprjCN = aux_projNorm(xprjC);
-yprjCN = aux_projNorm(yprjC);
-
-% plot'em
-aux_plotRgbs(xprjC, strcat('xprjC'), 0);
-aux_plotRgbs(xprjC, strcat('xprjC'), 3);
-aux_plotRgbs(yprjC, strcat('yprjC'), 0); camroll(90);
-aux_plotRgbs(yprjC, strcat('yprjC'), 2); camroll(90);
-
-
-%% disappear
-draw = 1;
-% 
-% lptC = aux_colorOfIm(lptRgb,draw);
-% lptRgb = lptRgb - lptC;
-% lptRgb = DISAPPEAR_colorfullPixels(lptRgb,draw);
-
-
-
-
-%% remove vertical margins = horizontal upper/lower-strips
-
-% %% remove horizontal margins = vertical left/right-strips
-% % ____________________________________________________
-% % horizontal and vertical projection
-% 
-% % color only after cutting
-% lptC = aux_colorOfIm( lptRgb, 0 );
-% 
-% % xprjC,yprjC - projections of [lptC]
 % norma = 0;
-% xprjC = aux_projectDown(lptC,               norma);
-% yprjC = aux_projectDown(imrotate(lptC,-90), norma);
+% xprjC = aux_projectDown(lptBw,               norma);
+% yprjC = aux_projectDown(imrotate(lptBw,-90), norma);
 % xprjCN = aux_projNorm(xprjC);
 % yprjCN = aux_projNorm(yprjC);
 % 
 % % plot'em
 % aux_plotRgbs(xprjC, strcat('xprjC'), 0);
-% aux_plotRgbs(xprjC, strcat('yprjC'), 3);
-% aux_plotRgbs(yprjC, strcat('xprjC'), 0); camroll(90);
+% aux_plotRgbs(xprjC, strcat('xprjC'), 3);
+% aux_plotRgbs(yprjC, strcat('yprjC'), 0); camroll(90);
 % aux_plotRgbs(yprjC, strcat('yprjC'), 2); camroll(90);
-
-% ____________________________________________________
-% skew lpt??
-% ____________________________________________________
-% edges
-% % F = 'sobel';
-% % F = 'log';
-% % F = 'prewitt';
-% % F = 'zerocross';
-% F = 'canny';
-% im = edge(bw, F);
-% 
-% aux_imprintS(im,'edge');
-% xprjEE = aux_projectDown(sLptC.area_euro,0);
-
-% % % make 5 horiz lines -> find edges
-% im = sLptC.area_euroEd;
-% aux_imprintS(im,[]);
-
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% make two parts
-% do not try to find green dot 
-% if - found r-disc - in previous section (or try to find for the first time)
-
-% % highest peak left and righ border (from center of lpt)
-% % % = diff of peak from center
-% % % - cut it from the picture
-% % % on the left is one part, on the right is the second -> +flag= 2parts
-% else - no g/r-disc
-% % try it from xintegColorless(4) = sum of r,g,b channels
-% % % = diff of peak from center 
-% % % searching for edge down and up not so close togeather as others!
-
-
-%% del color thingy - euro and signs - low frame should be removed already
-% sumLpt(:,:) = lpt(:,:,1)+lpt(:,:,2)+lpt(:,:,3);
-% sumLpt = imfuse(lpt(:,:,1),lpt(:,:,2),'blend');
-% sumLpt = imfuse(sumLpt,lpt(:,:,3),'blend');
-
-
-% hsvCol = rgb2hsv(colOfLpt);
-% in some interval of hue -> create a mask
-
-
-% lower the number of colors in palette
-% mapCols = hsv(3);
-% mapCols = cat(1, mapCols, [0 0 0]);
-% colOfLpt = imsharpen(colOfLpt);
-
-% lpt4cols = rgb2ind(colOfLpt_contrasted ,mapCols,'nodither');
-
-% apply black / white through the mask
-% if red or green --> white
-% if blue --> black
-
-
-%% remove frame or precolor gray?
-% % try to find transformation of char first?? <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-% lptGray = rgb2gray(lptRgb);
-% lptGray = imadjust(lptGray);
-% im = lptGray ;
-% SI=SI+1; subplot2(SY,SX,SI);
-% imshow(im,[]); title(strcat('lptGray')); axis tight
-% 
-% % lower the number of colors in palette
-%  lptGrayRgb = repmat(lptGray(:,:),[1,1,3]);
-%  
-%  mapCols = gray(5);
-%  
-% lptGrayRgbFew = rgb2ind(lptGrayRgb,mapCols,'nodither');
-% 
-% im = lptGrayRgbFew;
-% SI=SI+1; subplot2(SY,SX,SI);
-% imshow(im,[]); title(strcat('lptGray')); axis tight
-% % utilise edison wrapper = mean-shift? but long compute time?
-% 
-% % lptRgb = contrastFrame;
-
-%% separate chars? 
-
-% thin margin
-
-im = lptRgb;
-aux_imprint(im , strcat('bw preprocessed text only]]') );
-
-% imfuse
 
 % % do morph erosion
 % R = ceil(ih / 80);
@@ -362,28 +209,10 @@ aux_imprint(im , strcat('bw preprocessed text only]]') );
 %     im = lptBw;
 %     aux_imprintS(im,'closed')
 
-% ____________________________________________________
-draw = 1;
-chims = F40_getCharIms(lptRgb, draw); %returns cell array of char images
-
-imPulp = 0;
-for iChar=1:7
-    im = chims{iChar};
-    if(iChar == 1)
-        imPulp = im;
-    else
-        imPulp = cat(2,imPulp,im);
-%         imPulp = imfuse(imPulp,im,'montage');
-    end
-end
-aux_imprint(imPulp, strcat('im of char[',num2str(iChar),']') );
-
-% F50____________________________________________________
-draw = 1;
-for iChar=1:7
-    %returns cell array of feature vectors of inidividual characters
-    features{iChar} = F50_getFeaturesOfChar(chims{iChar}, iChar, draw); 
-end
+% for iChar=1:7
+%     %returns cell array of feature vectors of inidividual characters
+%     features{iChar} = F50_getFeaturesOfChar(chim{iChar}, iChar, draw); 
+% end
 % F60____________________________________________________
 draw = 1;
 
@@ -417,8 +246,7 @@ end
 % if(SI~=SX)&&(iLpt==1) % if one subplot row is not wide enaugh
 if(SI~=SY)&&(iLpt==1) % if one subplot row is not wide enaugh
    clc;
-   disp(sprintf('YOU should change [nSubplots] value to [%i]', ...
-       SI ));
+   disp(sprintf('YOU should change [nSubplots] value to [%i]', SI ));
    
 %    break;
     nSubplots = SI;
@@ -433,6 +261,45 @@ timMeanLpt = mean(tim);
 disp(sprintf('Total time of [%i]lpts is [%.2f]s, mean is [%.2f]s',...
     sumLpt, totTim, timMeanLpt ));
 
+% END OF OCR
 
 
+
+
+
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% not used yet?
+% ____________________________________________________
+% lower the number of colors in palette
+% mapCols = hsv(3);
+% mapCols = cat(1, mapCols, [0 0 0]);
+% colOfLpt = imsharpen(colOfLpt);
+% lpt4cols = rgb2ind(colOfLpt_contrasted ,mapCols,'nodither');
+% ____________________________________________________
+% REMOVE_frame and 3 inside 
+% - adaptive hist..
+% ____________________________________________________
+% % % % % % % % % % % % % % activecontour!!!!!!!!!!!!!!!!!!!!!!
+
+%% may not use at all
+% ____________________________________________________
+% Make colors disappear into white
+% lRgb = DISAPPEAR_colors(lRgb,draw);
+% ____________________________________________________
+% aux_rgb2grayMax
+% ____________________________________________________
+% lptRgb = DISAPPEAR_colorfullPixels(lptRgb,draw);
+% ____________________________________________________
+% edges
+% % F = 'sobel';
+% % F = 'log';
+% % F = 'prewitt';
+% % F = 'zerocross';
+% F = 'canny';
+% im = edge(bw, F);
+% ____________________________________________________
+% make 5 horiz lines -> find edges
+% ____________________________________________________
+% sumLpt = imfuse(sumLpt,lpt(:,:,3),'blend');
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
