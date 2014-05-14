@@ -61,14 +61,17 @@ if exist(nam,'file') == 0
     %% create training data and its group selectors
     [traAN, grpAN, traA , grpA, traN , grpN] = CREATE_trainingDataSets( meas, species);
 end
-load(nam);
+if exist('grpA','var') == 0
+    load(nam);
+end
 
 
 % load font examples for feature creation
 global font_chim;
 global font_ch;
-[font_chim, font_ch] = FT50_loadFontExamples();
-
+if isempty('font_chim') 
+    [font_chim, font_ch] = FT50_loadFontExamples();
+end
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % MAIN FOR LOOP
 
@@ -168,10 +171,10 @@ for iCh=1:7
 % do statistiky a výpoèet bodù za projekt..
 end
 
+if draw==1
 % if(SI~=SX)&&(iLpt==1) % if one subplot row is not wide enaugh
 if(SI~=SY)&&(iLpt==1) % if one subplot row is not wide enaugh
 %    clc;
-if draw==1
    disp2(1,sprintf('YOU should change [nSubplots] value to [%i]', SI ));
 end
 %    break;

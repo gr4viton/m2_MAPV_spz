@@ -118,17 +118,17 @@ gpRotateBad {q} = [6];
 gbSegmentBad{q} = [5 9];
 gbRecognzBad{q} = [];
 q = 20;
-gpGood      {q} = [11 12  14 15  17 18 20];
+gpGood      {q} = [11 12 13 14 15  17 18 20];
 gbCutBad    {q} = [];
 gpRotateBad {q} = [];
 gbSegmentBad{q} = [19];
-gbRecognzBad{q} = [13 16];
+gbRecognzBad{q} = [16];
 q = 30;
-gpGood      {q} = [26 27 29, 30];
+gpGood      {q} = [24 26 27 29, 30];
 gbCutBad    {q} = [21 28];
 gpRotateBad {q} = [];
 gbSegmentBad{q} = [22];
-gbRecognzBad{q} = [23 24 25 ];
+gbRecognzBad{q} = [23 25 ];
 q = 40;
 gpGood      {q} = [31  33 34 35 36 39 40];
 gbCutBad    {q} = [];
@@ -136,50 +136,51 @@ gpRotateBad {q} = [];
 gbSegmentBad{q} = [38 32];
 gbRecognzBad{q} = [37];
 q = 50;
-gpGood      {q} = [41 42 44 46 48 50];
+gpGood      {q} = [41 42 44 46 47 48 49 50];
 gbCutBad    {q} = [];
 gpRotateBad {q} = [];
 gbSegmentBad{q} = [43 45  ];
-gbRecognzBad{q} = [47 49];
+gbRecognzBad{q} = [];
 
 q = 60;
-gpGood      {q} = [53 54 55 56 57 58 59 60];
+gpGood      {q} = [51 53 54 55 56 57 58 60];
 gbCutBad    {q} = [];
 gpRotateBad {q} = [];
 gbSegmentBad{q} = [52 ];
-gbRecognzBad{q} = [51  ];
+gbRecognzBad{q} = [ 59];
 q = 70;
-gpGood      {q} = [61  63 64 65 66 69];
+gpGood      {q} = [61  63 64 65 66 67 68 69];
 gbCutBad    {q} = [];
 gpRotateBad {q} = [];
 % 62 - takes hyphen.. why?
 gbSegmentBad{q} = [62 70];
-gbRecognzBad{q} = [ 67 68 ];
+gbRecognzBad{q} = [ ];
 q = 80;
-gpGood      {q} = [71 72 73 74 75 78 79 80];
+gpGood      {q} = [71 72 73 74 76 78 79 80];
 gbCutBad    {q} = [];
 gpRotateBad {q} = [];
-gbSegmentBad{q} = [76 77];
+gbSegmentBad{q} = [75 77];
 gbRecognzBad{q} = [];
 q = 90;
 gpGood      {q} = [81 83 84 85 86 87 88 89 90];
 gbCutBad    {q} = [];
 gpRotateBad {q} = [];
-gbSegmentBad{q} = [82];
+gbSegmentBad{q} = [82 ];
 gbRecognzBad{q} = [];
 q = 100;
-gpGood      {q} = [91 92 93 94 96 97 99 100];
+gpGood      {q} = [91 92 93 94 96 97 98 99 100];
 gbCutBad    {q} = [];
 gpRotateBad {q} = [];
 gbSegmentBad{q} = [95];
-gbRecognzBad{q} = [ 98 ];
+gbRecognzBad{q} = [ ];
 
 %% create group of ten
-q = 10;
+q = 100;
 coef = q/10 - 1;
 off = 10*coef;
 gpLpt = (1:10) + off;
 %% 
+gpLpt = 1:50;
 gpLpt = 51:100;
 % gpLpt = [gbSegmentBad{:}];
 
@@ -333,13 +334,14 @@ chim = cat(2,lchim, rchim);
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % here save all the individual chims to one directory with incrementing
 % index over all lpts
-% % % % % % % for iCh = 1:7
-% % % % % % %     nam = sprintf('chim\\ch_%03i.png',iChAll);
-% % % % % % %     im = chim{iCh};
-% % % % % % %     imwrite(im,nam,'png');
-% % % % % % %     iChAll = iChAll+1;
-% % % % % % % end
+% % for iCh = 1:7
+% %     nam = sprintf('chim\\ch_%03i.png',iChAll);
+% %     im = chim{iCh};
+% %     imwrite(im,nam,'png');
+% %     iChAll = iChAll+1;
+% % end
 % that is all
+
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % F50____________________________________________________
@@ -399,12 +401,25 @@ disp2(1,sprintf('LPTstr = >>>[%s]<<< == should be [%s]',...
 
 % ____________________________________________________
 % F70_check_strLpt.m
-for iCh=1:7
     %returns array of characters
 %     char[iChar] = F60_assume_char(features{iChar}, iChar, innerDraw); 
 % porovnani se spravnou hodnotou a vypsani uspìl neuspìl popøípadì pøidání
 % do statistiky a výpoèet bodù za projekt..
+
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% here save all chars from good classified lpts
+if strcmpi(strLpt,strLptGood{numLpt})
+    nml= numel(chim);
+    for iCh = 1:nml
+        ch = strLpt(iCh);
+        nam = sprintf('chim_sorted\\good\\%c_%03i.png',ch,numLpt);
+        im = chim{iCh};
+        imwrite(im,nam,'png');
+    end
 end
+
+% that is all
+
 
 % if(SI~=SX)&&(iLpt==1) % if one subplot row is not wide enaugh
 if(SI~=SY)&&(iLpt==1) % if one subplot row is not wide enaugh
@@ -453,14 +468,16 @@ end
 % save it
 save('strLptGood','strLptGood');
 cnt =  sum(~cellfun('isempty',strLptGood));
-disp2(2, sprintf('strLptGood has [%i] properly segmented lpt saved',cnt))
+disp2(2, sprintf('strLptGood has [%i] properly segmented lpt strings saved',cnt))
 disp2(2, sprintf('added [%i] new strLpts',cnt-cntOld))
 
 % END OF OCR
-%%
+%% save some
 % strLptGood{94} = '2AT7606';
 % strLptGood{95} = '2AT7047';
-% strLptGood{91} = 'BKE7611';
+% strLptGood{5} = '8T74733';
+% strLptGood{6} = 'WE79692';
+% strLptGood{21} = '7B59833';
 % save('strLptGood','strLptGood');
 
 

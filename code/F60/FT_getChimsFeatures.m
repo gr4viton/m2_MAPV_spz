@@ -66,8 +66,8 @@ for countChim = 1:tryNchim
 %     elseif whichLpt  == 2
 % %         numCh = gpLpt(iLpt);
 %     end
-    
-    imRgb = imread(strcat(imgPath, dCell(numChim).name)); 
+    nam = dCell(numChim).name;
+    imRgb = imread(strcat(imgPath, nam)); 
     if islogical(imRgb)
         % is already binary
         chim{numChim} = imRgb;
@@ -88,7 +88,7 @@ for countChim = 1:tryNchim
 %     end
 
 %     disp2(3,sprintf('chim = %3d/%-3d',numChim,tryNchim));
-    disp2(2,sprintf('chim = %3d/%-3d ==> should be [%c]',countChim,tryNchim,ch));
+    disp2(2,sprintf('chim = %3d/%-3d ==> should be [%c] == [%s]',countChim,tryNchim,ch,nam));
 %     disp2(3,sprintf('Should be %c',ch));
     if draw==1
         im = chim{numChim};

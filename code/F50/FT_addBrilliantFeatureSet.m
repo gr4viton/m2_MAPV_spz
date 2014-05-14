@@ -14,6 +14,9 @@ st = regionprops(chim, 'Centroid',...
     'Perimeter','Orientation','MajorAxisLength','MinorAxisLength',...
     'Extent','Extrema','Eccentricity','EquivDiameter','Area' );
 
+if isempty(st)
+    return
+end
 %% 'Centroid' 
 % [position of centroid] to size
 ftVal = st.Centroid(1) / iw;
