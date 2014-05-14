@@ -1,7 +1,6 @@
 function lptBlackedRgb = BLACK_colorfullPixels(lptRgb,draw)
 % returns rgb image with all the colorfull pixels darken - or black 
 
-
 ih = size(lptRgb,1);
 iw = size(lptRgb,2);
 px = ih*iw;
@@ -14,7 +13,8 @@ satO = sat;
 
 % morph over sat
 R = ceil(ih / 30);
-SE = strel('disk',R,4);
+% SE = strel('disk',R,4);
+SE = strel('disk',R,8);
 sat(:,:,1) = imclose(sat, SE);
 
 

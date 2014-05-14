@@ -36,28 +36,19 @@ ftNs = {};
 
 
 %% porovnání se vzorem
-siz = numel(font_chim);
-for q=1:siz
-    c = chim;
-    f = font_chim{q};
-% resize on same size
-    nml = numel(f);
-    if nml > numel(c)
-        % f is bigger -> make c bigger
-        c = imresize(c, size(f));
-    else
-        f = imresize(f, size(c));
-    end
-% count error    
-    err = 0;
-    for e=1:nml
-        err = err + abs(f(e) - c(e));
-    end
-    err = err / nml;
-    ftVal = err;
-    tit = sprintf('err_pattern:%c',font_ch{q});
-    [ftCh, ftNs] = FT_addFeature(ftCh,ftVal,ftNs,tit);
-end
+
+pat = font_chim;
+pat_ch = font_ch;
+tit = 'pattern';
+im = chim;
+[ftCh, ftNs] = FT_patternSame(1,im,ftCh,ftNs,tit,pat,pat_ch);
+
+%% rewrite - calculate subimages of pattern outside
+% tit = 'patternCenter';
+% im = chim;
+% centS = 4;
+% [ftCh, ftNs] = FT_patternSame(centS,im,ftCh,ftNs,tit,pat,pat_ch);
+    
 
 %% horizontal and vertical projection
 

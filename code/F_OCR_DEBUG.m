@@ -84,56 +84,77 @@ gpBwingGoodBoth = [ 17 79 37 74 2 27 33 49 54 60 61 71 92 100];
 gpShadowyBad = [ 19 43];
 gpShadowy = [13 18 ];
 
-q = 999;
+%% remove from a those from b
+a = gpLpt;
+no = cat(2,gpIgnoreDef);
+[r c]=find(bsxfun(@eq,a,no')');
+[~,ia,~]=unique(c,'first');
+gpLpt(r(ia)) = [];
+
+
+% gpLpt = cat(2,gpBwingGood(1:5) );
+% gpLpt = cat(2,gpShadowy, gpNotBwingRight);
+% gpLpt = cat(2,gpShadowy );
+% gpLpt = cat(2,gpDisappears );
+% gpLpt = cat(2,gpDots);
+% gpLpt = cat(2,gpNoDots);
+% gpLpt = cat(2,gpTilted);
+% gpLpt = cat(2,gpSmallBlue);
+
+
+% nothing
+q = 1;
 gpGood      {q} = [];
 gbCutBad    {q} = [];
 gpRotateBad {q} = [];
 gbSegmentBad{q} = [];
 gbRecognzBad{q} = [];
 
+%% group of tens
 q = 10;
-gpGood      {q} = [1 2 3 4];
-gbCutBad    {q} = [];
+gpGood      {q} = [1 2 3 7 8 10];
+gbCutBad    {q} = [4];
 gpRotateBad {q} = [6];
-gbSegmentBad{q} = [5];
+gbSegmentBad{q} = [5 9];
 gbRecognzBad{q} = [];
 q = 20;
-gpGood      {q} = [11 12 13 14 15 16 17 18 20];
+gpGood      {q} = [11 12  14 15  17 18 20];
 gbCutBad    {q} = [];
 gpRotateBad {q} = [];
 gbSegmentBad{q} = [19];
-gbRecognzBad{q} = [];
+gbRecognzBad{q} = [13 16];
 q = 30;
-gpGood      {q} = [22 24 26 27 29];
+gpGood      {q} = [26 27 29, 30];
 gbCutBad    {q} = [21 28];
 gpRotateBad {q} = [];
-gbSegmentBad{q} = [ ];
-gbRecognzBad{q} = [23 25 30];
+gbSegmentBad{q} = [22];
+gbRecognzBad{q} = [23 24 25 ];
 q = 40;
-gpGood      {q} = [31 32 33 34 35 36 37 39 40];
+gpGood      {q} = [31  33 34 35 36 39 40];
 gbCutBad    {q} = [];
 gpRotateBad {q} = [];
-gbSegmentBad{q} = [38];
-gbRecognzBad{q} = [];
+gbSegmentBad{q} = [38 32];
+gbRecognzBad{q} = [37];
 q = 50;
-gpGood      {q} = [41 42 44 46 47 48 49];
+gpGood      {q} = [41 42 44 46 48 50];
 gbCutBad    {q} = [];
 gpRotateBad {q} = [];
-gbSegmentBad{q} = [43 45 50];
-gbRecognzBad{q} = [];
+gbSegmentBad{q} = [43 45  ];
+gbRecognzBad{q} = [47 49];
 
 q = 60;
-gpGood      {q} = [54 57 58 59 60];
+gpGood      {q} = [53 54 55 56 57 58 59 60];
 gbCutBad    {q} = [];
 gpRotateBad {q} = [];
-gbSegmentBad{q} = [52 56];
-gbRecognzBad{q} = [51 53 55];
+gbSegmentBad{q} = [52 ];
+gbRecognzBad{q} = [51  ];
 q = 70;
-gpGood      {q} = [62 63 64 65 66 69];
+gpGood      {q} = [61  63 64 65 66 69];
 gbCutBad    {q} = [];
 gpRotateBad {q} = [];
-gbSegmentBad{q} = [70];
-gbRecognzBad{q} = [61 67 68 ];
+% 62 - takes hyphen.. why?
+gbSegmentBad{q} = [62 70];
+gbRecognzBad{q} = [ 67 68 ];
 q = 80;
 gpGood      {q} = [71 72 73 74 75 78 79 80];
 gbCutBad    {q} = [];
@@ -141,25 +162,37 @@ gpRotateBad {q} = [];
 gbSegmentBad{q} = [76 77];
 gbRecognzBad{q} = [];
 q = 90;
-gpGood      {q} = [83 85 86 88 89 90];
+gpGood      {q} = [81 83 84 85 86 87 88 89 90];
 gbCutBad    {q} = [];
 gpRotateBad {q} = [];
 gbSegmentBad{q} = [82];
-gbRecognzBad{q} = [81 84 87];
+gbRecognzBad{q} = [];
 q = 100;
-gpGood      {q} = [92 93 96 99 100];
+gpGood      {q} = [91 92 93 94 96 97 99 100];
 gbCutBad    {q} = [];
 gpRotateBad {q} = [];
 gbSegmentBad{q} = [95];
-gbRecognzBad{q} = [91 94 97 98 ];
+gbRecognzBad{q} = [ 98 ];
 
 %% create group of ten
-q = 100;
+q = 10;
 coef = q/10 - 1;
 off = 10*coef;
 gpLpt = (1:10) + off;
+%% 
+gpLpt = 51:100;
+% gpLpt = [gbSegmentBad{:}];
 
-gpLpt = [gbSegmentBad{:}];
+%% take only first num of gpLpts
+nml = numel(gpLpt);
+% num = 5;
+% num = 10;
+
+num = 100;
+if num>nml
+    num = nml;
+end
+gpLpt = cat(2,gpLpt(1:num));
 
 %% count points from project
 right = numel([gpGood{:}]);
@@ -178,32 +211,11 @@ d = numel([gbRecognzBad{:}]);
 disp2(2,sprintf('[%i] badly recognized', d ));
 
 
-
-%% remove from a those from b
-a = gpLpt;
-no = cat(2,gpIgnoreDef);
-[r c]=find(bsxfun(@eq,a,no')');
-[~,ia,~]=unique(c,'first');
-gpLpt(r(ia)) = [];
-
-
-% gpLpt = cat(2,gpBwingGood(1:5) );
-% gpLpt = cat(2,gpShadowy, gpNotBwingRight);
-% gpLpt = cat(2,gpShadowy );
-% gpLpt = cat(2,gpDisappears );
-% gpLpt = cat(2,gpDots);
-% gpLpt = cat(2,gpNoDots);
-% gpLpt = cat(2,gpTilted);
-% gpLpt = cat(2,gpSmallBlue);
-
-%% take only first num of gpLpts
-nml = numel(gpLpt);
-num = 5;
-% num = 10;
-if num>nml
-    num = nml;
+%% load right strings if exists
+nam = 'strLptGood.mat';
+if exist(nam, 'file');
+    load(nam);
 end
-gpLpt = cat(2,gpLpt(1:num));
 
 
 if whichLpt  == 2
@@ -334,7 +346,8 @@ chim = cat(2,lchim, rchim);
 draw = 1;
 
 strLpt = '       ';
-for iCh=1:7
+nml = numel(chim);
+for iCh=1:nml
     %returns cell array of feature vectors of inidividual characters
     [ftCh,ftNs] = F50_getFeaturesOfChar(chim{iCh}, iCh, draw); 
 %     imshow(chim{iCh})
@@ -359,7 +372,13 @@ strLptThis{numLpt} = strLpt;
 % print all char images in one pulp image
 aux_imprintPulp(chim);
 title(sprintf('%i=[%s]',numLpt,strLpt));
-
+tit = '?=[%s]=>%s';
+good = strLptGood{numLpt};
+add = '!!!NO!!!';
+if strcmpi( good, strLpt)
+    add = 'OK';
+end
+xlabel(sprintf(tit,good,add))
 %% ____________________________________________________
 % time measurement
 tim(iLpt)=toc();
@@ -373,8 +392,9 @@ timEnd = endIn + timSum;
 %     numLpt, tim(iLpt),timSum, timSum/timEnd*100, endIn));
 disp2(1,sprintf('#%3i took [%.2f]s, [%.2f/%.2f]s == [%.1f]%% | endin''[%.2f]s',...
     numLpt, tim(iLpt),timSum, timEnd, timSum/timEnd*100, -endIn));
-disp2(1,sprintf('LPTstr = >>>[%s]<<<',strLpt));
-pause(0.05)
+disp2(1,sprintf('LPTstr = >>>[%s]<<< == should be [%s]',...
+    strLpt,strLptGood{numLpt}));
+
 % ____________________________________________________
 
 % ____________________________________________________
@@ -407,11 +427,6 @@ disp2(1,sprintf('Total time of [%i]lpts is [%.2f]s, mean is [%.2f]s',...
 
 
 %% save properly OCR'ed lpt strings - if they are not saved yet
-% load if exists
-nam = 'strLptGood.mat';
-if exist(nam, 'file');
-    load(nam);
-end
 
 cntOld =  sum(~cellfun('isempty',strLptGood));
 % strLptGood = {};
@@ -442,7 +457,11 @@ disp2(2, sprintf('strLptGood has [%i] properly segmented lpt saved',cnt))
 disp2(2, sprintf('added [%i] new strLpts',cnt-cntOld))
 
 % END OF OCR
-
+%%
+% strLptGood{94} = '2AT7606';
+% strLptGood{95} = '2AT7047';
+% strLptGood{91} = 'BKE7611';
+% save('strLptGood','strLptGood');
 
 
 %% count points from project

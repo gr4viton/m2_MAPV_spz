@@ -5,7 +5,8 @@ function chim = GET_orderedChims(lptBw,nCh,draw)
 lptWb = imcomplement(lptBw);
 % [chimNO] - not ordered
 for q=1:nCh
-    [chimNO{q}, cc] = GET_biggest(lptWb);
+    [chimNO{q}, cc] = GET_convexBiggest(lptWb);
+%     [chimNO{q}, cc] = GET_biggest(lptWb);
     lptWb = lptWb - chimNO{q};
 end
 
@@ -26,7 +27,8 @@ col = 1; %=x
 sorted = sortrows(cent',col);
 sortIs = sorted(:,3);
 
-for q=1:nCh
+nml = numel(sortIs);
+for q=1:nml
     chim{q} = chimNO{sortIs(q)};
 end
 

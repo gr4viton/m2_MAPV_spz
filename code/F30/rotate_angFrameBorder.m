@@ -51,9 +51,13 @@ angMax = 10; %[°]
     
     wow = 5; % weight of weighted angle
     angle = (angleWeighted*wow + median(ang(:)') ) / sum(wow,1);    
+    if abs(angle) > 5
+        angle =0;
+    end
     tit = strcat(tit,'=',num2str(angle),'|');
 
 %% counted angle
+% angle
     outAngle = angle;
     
 %% drawin'   

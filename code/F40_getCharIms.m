@@ -12,7 +12,8 @@ if draw==1
     aux_imprintPulp(chim);
 end
 
-for q=1:nCh
+nml = numel(chim);
+for q=1:nml
     chim{q} = POSTPROCESS_chim(chim{q});
 end
 

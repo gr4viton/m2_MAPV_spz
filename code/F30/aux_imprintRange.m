@@ -10,6 +10,7 @@ if(numel(im) >= 1)
 ywanna = 100;
 mag = ywanna / size(im,1);
  imshow(im,rng,'InitialMagnification',mag); title(tit); axis tight
+pause(0.03)
 % yy = [0 100];
 %   imshow(im,rng,'Ydata',yy); title(tit); axis tight
 end

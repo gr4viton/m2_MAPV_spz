@@ -11,11 +11,11 @@ function [lptCleanBw] = F30_getCleanText(lptRgb, draw)
 lptBlackedRgb = BLACK_colorfullPixels(lptRgb,draw);
 
 %% thresh and frame the lpt part
-draw = 1;
+% draw = 1;
 [lptWFrameBw, voffs] = PREPARE_bwFrame(lptBlackedRgb,draw);
 % voffs = [toH, toW] - toW is aplicated 1st to sides, toH second to up,dn
     
-draw = 0;
+% draw = 0;
 %% remove frame Up, Dn
 lptNoUDMarginBw = REMOVE_frameUD(lptWFrameBw,draw);
 
