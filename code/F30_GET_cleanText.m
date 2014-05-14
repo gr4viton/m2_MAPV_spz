@@ -8,7 +8,6 @@ function [lptCleanBw] = F30_getCleanText(lptRgb, draw)
 
 %% filter background through saturation
 % ? make black areas blackier and compact
-draw=0;
 lptBlackedRgb = BLACK_colorfullPixels(lptRgb,draw);
 
 %% thresh and frame the lpt part
@@ -33,3 +32,5 @@ end
 
 %% end of function
 end
+
+

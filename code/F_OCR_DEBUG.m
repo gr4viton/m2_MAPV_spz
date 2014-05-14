@@ -37,6 +37,8 @@ whichLpt = 2;    % if try on different LPTs each time
 sumLpt = 5;     % number of lpts to try
 nSubplots = 11;  % number of subplots for each lpt
 was = [-1];      % indexes of OCRed lpts
+ft = [];         % feature vector - rows=features, cols=chars
+iChAll = 1;     % index through all the lpt characters
 
 gpTilted = [9 14 24 25 33 43 46 48 50 55];
 gpBadHalves = [21];
@@ -53,6 +55,7 @@ gpLpt = [67 41 40 61];
 
 % gpLpt = cat(2,gpSame );
 gpLpt = cat(2,gpBwingGood );
+% gpLpt = cat(2,gpBwingBad );
 % gpLpt = cat(2,gpBwingGood(1:5) );
 % gpLpt = cat(2,gpShadowy, gpNotBwingRight);
 % gpLpt = cat(2,gpShadowy );
@@ -71,15 +74,33 @@ end
 chimzy = [];
 
 % better for lpt = [u->d] -> [l->r] 
-FI=FI+1; FI_here=FI; figure(FI_here); SI = 0; SY = nSubplots; SX = sumLpt;
+F_I=F_I+1; FI_here=F_I; figure(FI_here); SI = 0; SY = nSubplots; SX = sumLpt;
 set(gcf,'units','normalized','outerposition',[0 0 1 1])
+
+
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% load feature vector from samples for classification
+load('classifier.mat');
+global traAN;
+global grpAN;
+global traA;
+global grpA;
+global traN;
+global grpN;
+
+
+% load font examples for feature creation
+global font_chim;
+global font_ch;
+[font_chim, font_ch] = FT50_loadFontExamples();
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % MAIN FOR LOOP
+
+
 for iLpt = 1:sumLpt % MAIN FOR LOOP START
 tic()
 %% picture aquisition
-
     numLpt = iLpt;
     if whichLpt  == 1
 %         if isempty
@@ -126,7 +147,7 @@ lptRgb = REMOVE_horizontalMargins(lptRgb, draw);
     aux_imprint(im, strcat('left|right') );
     
 %% Clean splitted text images
-draw = 0;
+draw = 1;
 lRgb = F30_GET_cleanText(lRgb,draw);
 rRgb = F30_GET_cleanText(rRgb,draw);
 
@@ -141,69 +162,46 @@ rchim = F40_getCharIms(rRgb, nChR, draw);
 
 % get cell arrays of both halfs after one another
 chim = cat(2,lchim, rchim);
-
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% here save all the individual chims to one directory with incrementing
+% index over all lpts
+% % % % % % % for iCh = 1:7
+% % % % % % %     nam = sprintf('chim\\ch_%03i.png',iChAll);
+% % % % % % %     im = chim{iCh};
+% % % % % % %     imwrite(im,nam,'png');
+% % % % % % %     iChAll = iChAll+1;
+% % % % % % % end
+% that is all
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % F50____________________________________________________
 draw = 1;
 
-% individual region properties
-
-% ____________________________________________________
-% horizontal and vertical projection
-
-
-% xprjC,yprjC - projections of [lptC]
-% norma = 0;
-% xprjC = aux_projectDown(lptBw,               norma);
-% yprjC = aux_projectDown(imrotate(lptBw,-90), norma);
-% xprjCN = aux_projNorm(xprjC);
-% yprjCN = aux_projNorm(yprjC);
-% 
-% % plot'em
-% aux_plotRgbs(xprjC, strcat('xprjC'), 0);
-% aux_plotRgbs(xprjC, strcat('xprjC'), 3);
-% aux_plotRgbs(yprjC, strcat('yprjC'), 0); camroll(90);
-% aux_plotRgbs(yprjC, strcat('yprjC'), 2); camroll(90);
-
-% % do morph erosion
-% R = ceil(ih / 80);
-% SE = strel('disk',R,4);
-% lptBw = imerode(lptBw, SE);
-%     im = lptBw;
-%     aux_imprintS(im,'erosion')
-%     
-% % do morph opening
-% R = ceil(ih / 40);
-% SE = strel('disk',R,4);
-% lptBw = imopen(lptBw, SE);
-%     im = lptBw;
-%     aux_imprintS(im,'opening')
-% 
-% % do morph closing
-% R = ceil(ih / 40);
-% SE = strel('disk',R,4);
-% lptBw = imclose(lptBw, SE);
-%     im = lptBw;
-%     aux_imprintS(im,'closed')
-
-% for iChar=1:7
-%     %returns cell array of feature vectors of inidividual characters
-%     features{iChar} = F50_getFeaturesOfChar(chim{iChar}, iChar, draw); 
-% end
-% F60____________________________________________________
-chimzy = cat(2,chimzy,chim);
-draw = 1;
-disp2(1,sprintf('#%3i Fatures:',numLpt));
 char = '       ';
 for iCh=1:7
-    %returns array of characters
-    [char(iCh), P(:,1:2,iCh)] = F60_whichChar( chim{iCh}, iCh, draw); 
-end
+    %returns cell array of feature vectors of inidividual characters
+    [ftCh,ftNs] = F50_getFeaturesOfChar(chim{iCh}, iCh, draw); 
 
+% % add this chim feature vector [ftCh] into next column in feature vector of
+% % all chims [ft]
+% ft = cat(2,ft,ftCh)
+% % ftNs should be the same for all the chims..
+% aux_imprintS(chim, iCh);
+
+% F60____________________________________________________
+% chimzy = cat(2,chimzy,chim);
+% draw = 1;
+% disp2(1,sprintf('#%3i Fatures:',numLpt));
+
+
+    %returns array of characters
+%     [char(iCh)] = F60_whichChar( iCh, ftCh, ftNs, meas, species); 
+    [char(iCh)] = F60_whichChar( iCh, ftCh); 
+end
+% 
 % print all char images in one pulp image
 aux_imprintPulp(chim);
-title(sprintf('#%i = %s',numLpt,char));
+title(sprintf('%i=[%s]',numLpt,char));
 
 %% ____________________________________________________
 % time measurement

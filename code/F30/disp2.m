@@ -10,6 +10,10 @@ if disp2_level >= indentation
             prefix = '  * ';
         case(3)
             prefix = '    - ';    
+        case(4)
+            prefix = '     -- ';    
+        case(5)
+            prefix = '      --- ';    
         otherwise
             prefix = '';    
     end

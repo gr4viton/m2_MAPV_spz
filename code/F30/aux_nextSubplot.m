@@ -5,6 +5,10 @@
 % F0_defines();
 F0_defPlot();
 
+global SI;
+global SY;
+global SX;
+
 SI=SI+1; 
 % traditional = [l->r] -> [u->d]
 % subplot2(SY,SX,SI);

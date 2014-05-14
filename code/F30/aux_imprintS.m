@@ -4,5 +4,7 @@ function out = aux_imprintS(im,tit)
 % \param draw - whether to subplot informative data [1=yes]
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 aux_nextSubplot();
-imshow(im,[]); title(tit); axis tight
+if(numel(im) >= 1)
+    imshow(im,[]); title(tit); axis tight
+end
 end

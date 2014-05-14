@@ -95,9 +95,7 @@ for iChim = 1:ceil(numAll/s)
     % print all char images in one pulp image
     aux_imprintPulpX(chim,[intv(1),intv(end)]);
     title(sprintf('[%i:%i] = %s',intv(1),intv(end),char));
-    disp2(1,sprintf('LPTstr = >>>[%s]<<<',char));
-    
-    
+    disp2(1,sprintf('LPTstr = >>>[%s]<<<',char));    
     
     SY = floor(numAll/s)+1; 
 end

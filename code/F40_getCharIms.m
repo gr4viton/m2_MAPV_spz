@@ -37,6 +37,8 @@ for q=1:nCh
     fromH = floor(y);
     toH = ceil(y+h);
     chim{q} = chim{q}(fromH:toH, fromW:toW);
+
+%     chim{q} = imcrop(chim{q});
 end
 
 %% try to close numbers first

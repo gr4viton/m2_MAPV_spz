@@ -8,11 +8,16 @@ F0_defines();
 F0_defPlot();
 addpath('..\SPZ_100');
 
+% addpath('.\addons\OCR');
+addpath('.\addons\directlda');
+
+
 addpath('.\F30');
 addpath('.\F40');
+addpath('.\F50');
 addpath('.\F60');
 
-FI = 0; % initialization - only on one place - delete when OCR_LPT works
+F_I = 0; % initialization - only on one place - delete when OCR_LPT works
 ft = struct( ...
     'point', 1, ...
     'areaSumRel', 1,...
