@@ -26,28 +26,38 @@ char = '?';
 
 
 %% what it can be 
-% if iCh == 2
-% % alpha-character only
-%     training = traA;
-%     group = grpA;
-% elseif iCh >= 4
-% % number only    
-%     training = traN;
-%     group = grpN;
-% else
-% % alpha or number
+if iCh == 2
+% alpha-character only
+% not working yet
+    training = traA;
+    group = grpA;
+
 %     training = traAN;
 %     group = grpAN;
-% end
-
+elseif iCh >= 4
+% number only    
+    training = traN;
+    group = grpN;
+%     training = traAN;
+%     group = grpAN;
+% not working yet
+else
+% alpha or number
     training = traAN;
     group = grpAN;
+end
+% size(training)
+% size(group)
+%     training = traAN;
+%     group = grpAN;
+    
 sample = ftCh';
 
 % ldaClass = classify(sample,training,group);
 % char = ldaClass{:};
-
-char = classify(sample,training,group);
+method = 'linear';
+% method = 'quadratic';
+char = classify(sample,training,group,method);
 
 disp2(2,sprintf('#%i = %c',iCh, char));
 % char = classify(ftCh,meas,species,'linear');

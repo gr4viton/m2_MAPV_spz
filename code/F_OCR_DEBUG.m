@@ -40,22 +40,56 @@ was = [-1];      % indexes of OCRed lpts
 ft = [];         % feature vector - rows=features, cols=chars
 iChAll = 1;     % index through all the lpt characters
 
+
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% groups of lpts
+gpLpt = [];
+gpIgnoreDef = [101];
+%% informative
 gpTilted = [9 14 24 25 33 43 46 48 50 55];
+gpSlovak = [52]; % ignore
+% gpSmallBlue = [43 70];
+% gpNoDots = [80 16 66 69 40 66 33 96 39 80 41 31];
+% gpDots = [81 43 92 5 86 94 77 75 18 71 29 6 11 83 70 45 20 3 76 67 63 56];
+% gpSame = [ 40 101 13 102 ];
+% gpLpt = [67 41 40 61];
+
+%  gpLpt = [ 38 63 79 10 94 ]
 gpBadHalves = [21];
-gpSmallBlue = [43 70];
-gpNoDots = [80 16 66 69 40 66 33 96 39 80 41 31];
-gpDots = [81 43 92 5 86 94 77 75 18 71 29 6 11 83 70 45 20 3 76 67 63 56];
+gpRotateBad = [6];
+
+%% get better
+gbSegmentBad = [5]
+gpShadowy = [ 41 40 43 ];
 gpDisappears = [29 39]; % in DIsappear colorfull
-gpShadowy = [ 41 40 13 ];
-gpSame = [ 40 101 13 102 ];
-gpSlovak = [52];
-gpBwingBad = [1 6 24 38 43 47 51 52 56 70 76 82 89 91 98 21 44 64 73];
-gpBwingGood = [40 17 79 37 74 2 27 33 49 54 60 61 71 92 100];
-gpLpt = [67 41 40 61];
+
+gpLeftBad = [21];
+gpFramingBad = [56];
+
+
+gpBwingVeryBad = [ 43 ];
+gpBwingBad = [ 6 52 56 91 98 21  ];
+gpBwingMed = [ 1 24 38 51 76 82 ];
+gpBwingGood = [ 41 44 64 89 70 47 40 73 ];
+gpBwingGoodBoth = [ 17 79 37 74 2 27 33 49 54 60 61 71 92 100];
+
+% gpLpt = cat(2,gpBwingBad, gpShadowy );
+gpLpt = cat(2,gbSegmentBad,gpShadowy,gpDisappears);
+% gpIgnoreDef = cat(2,gpFramingBad, gpBwingVeryBad, gpLeftBad, gpRotateBad, gpSlovak);
 
 % gpLpt = cat(2,gpSame );
-gpLpt = cat(2,gpBwingGood );
+% gpLpt = cat(2,gpBwingGood );
 % gpLpt = cat(2,gpBwingBad );
+% gpLpt = cat(2,gpBwingBad, gpShadowy );
+
+% remove from a those from b
+a = gpLpt;
+no = cat(2,gpIgnoreDef);
+[r c]=find(bsxfun(@eq,a,no')');
+[~,ia,~]=unique(c,'first');
+gpLpt(r(ia)) = [];
+
+
 % gpLpt = cat(2,gpBwingGood(1:5) );
 % gpLpt = cat(2,gpShadowy, gpNotBwingRight);
 % gpLpt = cat(2,gpShadowy );
@@ -64,6 +98,13 @@ gpLpt = cat(2,gpBwingGood );
 % gpLpt = cat(2,gpNoDots);
 % gpLpt = cat(2,gpTilted);
 % gpLpt = cat(2,gpSmallBlue);
+nml = numel(gpLpt);
+num = 6;
+if num>nml
+    num = nml;
+end
+gpLpt = cat(2,gpLpt(1:num));
+
 if whichLpt  == 2
     sumLpt = numel(gpLpt);
 end
@@ -80,13 +121,24 @@ set(gcf,'units','normalized','outerposition',[0 0 1 1])
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % load feature vector from samples for classification
-load('classifier.mat');
 global traAN;
 global grpAN;
 global traA;
 global grpA;
 global traN;
 global grpN;
+nam = 'classifier.mat';
+if exist(nam,'file') == 0
+    toSave = 1;
+    draw =0;
+    FT_getChimsFeatures(toSave,draw);
+    load('features.mat')
+    meas = ftv;
+    species = charv;
+    %% create training data and its group selectors
+    [traAN, grpAN, traA , grpA, traN , grpN] = CREATE_trainingDataSets( meas, species);
+end
+load(nam);
 
 
 % load font examples for feature creation
@@ -96,7 +148,6 @@ global font_ch;
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % MAIN FOR LOOP
-
 
 for iLpt = 1:sumLpt % MAIN FOR LOOP START
 tic()
@@ -121,7 +172,9 @@ tic()
 % ____________________________________________________
 % original plot
 im = lptRgb;
-aux_imprint(im, strcat('orig',num2str(numLpt),']]') );
+tit = strcat('orig',num2str(numLpt),']]');
+aux_imprint(im, tit );
+ylabel(num2str(numLpt));
 % ____________________________________________________
 draw = 0;
 % lpt = F30_getCleanText(lpt, innerDraw);
@@ -147,9 +200,11 @@ lptRgb = REMOVE_horizontalMargins(lptRgb, draw);
     aux_imprint(im, strcat('left|right') );
     
 %% Clean splitted text images
-draw = 1;
+% draw = 1;
 lRgb = F30_GET_cleanText(lRgb,draw);
 rRgb = F30_GET_cleanText(rRgb,draw);
+
+
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % separate chars = imchars  
@@ -181,7 +236,7 @@ char = '       ';
 for iCh=1:7
     %returns cell array of feature vectors of inidividual characters
     [ftCh,ftNs] = F50_getFeaturesOfChar(chim{iCh}, iCh, draw); 
-
+%     imshow(chim{iCh})
 % % add this chim feature vector [ftCh] into next column in feature vector of
 % % all chims [ft]
 % ft = cat(2,ft,ftCh)
@@ -217,6 +272,7 @@ timEnd = endIn + timSum;
 disp2(1,sprintf('#%3i took [%.2f]s, [%.2f/%.2f]s == [%.1f]%% | endin''[%.2f]s',...
     numLpt, tim(iLpt),timSum, timEnd, timSum/timEnd*100, -endIn));
 disp2(1,sprintf('LPTstr = >>>[%s]<<<',char));
+pause(0.05)
 % ____________________________________________________
 
 % ____________________________________________________
@@ -232,8 +288,8 @@ end
 if(SI~=SY)&&(iLpt==1) % if one subplot row is not wide enaugh
 %    clc;
    disp2(1,sprintf('YOU should change [nSubplots] value to [%i]', SI ));
-   
 %    break;
+
     nSubplots = SI;
     SY = nSubplots; 
     continue;

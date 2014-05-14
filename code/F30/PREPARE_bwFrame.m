@@ -10,29 +10,30 @@ lptG = imadjust(lptG);
 lptHsv = rgb2hsv(lptRgb);
 level = graythresh(lptHsv(:,:,2));
 
-% level = graythresh(lptG); % or otherwise
-coef = 1.2;
-level=level*coef;
+level = graythresh(lptG); % or otherwise
+% coef = 1.2;
+% level=level*coef;
 bw = im2bw(lptG,level);
     
 % add black and white frame around
-[lptBw, voffs] = FRAME_image(bw,draw);
+[lptBw, voffs] = FRAME_image(bw,0);
     lptBw1=lptBw;
 % morph - open then close better
 ih = size(lptRgb,1);
 iw = size(lptRgb,2);
 
 %% adjust frame by morph ops
-
-% do morph opening
-R = ceil(ih / 40);
-SE = strel('disk',R,4);
-lptBw = imopen(lptBw, SE);
-    lptBw2=lptBw;
-% do morph closing
-R = ceil(ih / 40);
-SE = strel('disk',R,4);
-lptBw = imclose(lptBw, SE);
+% 
+% % do morph opening
+% R = ceil(ih / 40);
+% SE = strel('disk',R,4);
+% lptBw = imopen(lptBw, SE);
+%     lptBw2=lptBw;
+%     
+% % do morph closing
+% R = ceil(ih / 40);
+% SE = strel('disk',R,4);
+% lptBw = imclose(lptBw, SE);
 
 if draw==1
     im = lptG;
@@ -43,11 +44,11 @@ if draw==1
     
     im = lptBw1;
     aux_imprintS(im,'framed')
-
-    im = lptBw2;
-    aux_imprintS(im,'opening')
-    im = lptBw;
-    aux_imprintS(im,'closed')
+% 
+%     im = lptBw2;
+%     aux_imprintS(im,'opening')
+%     im = lptBw;
+%     aux_imprintS(im,'closed')
 end
 
 

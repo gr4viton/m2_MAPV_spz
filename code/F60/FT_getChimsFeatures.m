@@ -12,8 +12,8 @@ F0_defPlot();
 global font_chim;
 global font_ch;
 
-[font_chim, font_ch] = FT50_loadFontExamples()
-
+[font_chim, font_ch] = FT50_loadFontExamples();
+[font_ch{:}]
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % SORTED
@@ -79,7 +79,6 @@ for countChim = 1:tryNchim
     char{numChim} = upper( dCell(numChim).name(1) );
 
     [ftCh, ftNs] = F50_getFeaturesOfChar(chim{numChim},numChim);
-    
     ftv = cat(1,ftv,ftCh');
     ch = char{numChim};
     charv = cat(1,charv,ch);
@@ -97,6 +96,10 @@ for countChim = 1:tryNchim
     end
 end
 
+% % to have only positive numbers
+% mm = min(min(ftv));
+% ftv = ftv + mm;
+    
 ftNames = ftNs;
 
 if toSave ==1

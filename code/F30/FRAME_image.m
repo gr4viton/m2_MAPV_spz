@@ -32,6 +32,6 @@ voffs(1) = to;
 
 if draw==1
     im = lptRgb;
-    aux_imprint(im,'framed')
+    aux_imprintS(im,'framed')
 end
     

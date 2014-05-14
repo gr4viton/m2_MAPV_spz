@@ -7,20 +7,16 @@ function [ftCh, ftNs] = F50_getFeaturesOfChar(chim, iCh, draw)
 global font_chim;
 global font_ch;
 
+str_iCh = sprintf('[%i]',iCh);
+
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% auxilary annonymous functions
+% dispFt = @(name,val) disp2(3,sprintf('%s [%0.2f]', name, val));
+% dispFtP = @(name,val) disp2(3,sprintf('%s [%0.2f]%%', name, val*100));
+%% subimages
 ih = size(chim,1);
 iw = size(chim,2);
-px = ih*iw;
-str_iCh = sprintf('[%i]',iCh);
-% str_iCh = sprintf('[%s]',iCh);
-
-% decide which of these to count - according to num/alpha searching
-st = regionprops(chim, 'EulerNumber','Centroid','Solidity',...
-    'Perimeter','Orientation','MajorAxisLength','MinorAxisLength',...
-    'Extent','Extrema','Eccentricity','EquivDiameter','Area'  );
-
-%% auxilary annonymous functions
-dispFt = @(name,val) disp2(3,sprintf('%s [%0.2f]', name, val));
-dispFtP = @(name,val) disp2(3,sprintf('%s [%0.2f]%%', name, val*100));
+aux_subimagesAnonymous()
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % FEATURES REQUISITION START
@@ -31,41 +27,56 @@ ftCh = [];
 % vertical cell array of string for names of individual features
 ftNs = {}; 
 
-pxs = st.Area;
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % THESE ARE NOT GOOD
 
-%% 'Centroid'
-% ftVal = s.Centroid(1);
-% [ftCh, ftNs] = FT_addFeature(ftCh,ftVal,ftNs,'CentroidX');
-% ftVal = s.Centroid(2);
-% [ftCh, ftNs] = FT_addFeature(ftCh,ftVal,ftNs,'CentroidY');
-
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % THESE ARE GOOD ENAUGHT
-%% 'EulerNumber'
-%  the total number of objects in the image minus the total number of holes in those objects
-% % ftVal = st.EulerNumber;
-% % [ftCh, ftNs] = FT_addFeature(ftCh,ftVal,ftNs,'EulerNumber');
-% WHY IT IS BAD FOR CLASSIFIER?
 
-%% Perimeter
-ftVal = st.Perimeter/pxs;
-[ftCh, ftNs] = FT_addFeature(ftCh,ftVal,ftNs,'Perimeter/sumpx');
-%% EquivDiameter
-ftVal = st.EquivDiameter;
-[ftCh, ftNs] = FT_addFeature(ftCh,ftVal,ftNs,'EquivDiameter');
 
-%% Eccentricity
-ftVal = st.Eccentricity;
-[ftCh, ftNs] = FT_addFeature(ftCh,ftVal,ftNs,'Eccentricity');
-%% Extent
-ftVal = st.Extent;
-[ftCh, ftNs] = FT_addFeature(ftCh,ftVal,ftNs,'Extent');
-%% Solidity
-ftVal = st.Solidity;
-[ftCh, ftNs] = FT_addFeature(ftCh,ftVal,ftNs,'Solidity');
+%% porovnání se vzorem
+siz = numel(font_chim);
+for q=1:siz
+    c = chim;
+    f = font_chim{q};
+% resize on same size
+    nml = numel(f);
+    if nml > numel(c)
+        % f is bigger -> make c bigger
+        c = imresize(c, size(f));
+    else
+        f = imresize(f, size(c));
+    end
+% count error    
+    err = 0;
+    for e=1:nml
+        err = err + abs(f(e) - c(e));
+    end
+    err = err / nml;
+    ftVal = err;
+    tit = sprintf('err_pattern:%c',font_ch{q});
+    [ftCh, ftNs] = FT_addFeature(ftCh,ftVal,ftNs,tit);
+end
+
+%% horizontal and vertical projection
+
+% xprjC,yprjC - projections of [lptC]
+norma = 0;
+xprjC = aux_projectDown(chim,               norma);
+yprjC = aux_projectDown(imrotate(chim,-90), norma);
+xprjCN = aux_projNorm(xprjC);
+yprjCN = aux_projNorm(yprjC);
+
+ftVal = median(xprjCN(:,:,1));
+[ftCh, ftNs] = FT_addFeature(ftCh,ftVal,ftNs,'xprojCN_med');
+ftVal = median(yprjCN(:,:,1));
+[ftCh, ftNs] = FT_addFeature(ftCh,ftVal,ftNs,'yprjCN_med');
+
+ftVal = max(xprjC(:,:,1)) / sum2(xprjC(:,:,1));
+[ftCh, ftNs] = FT_addFeature(ftCh,ftVal,ftNs,'xprojC_max');
+ftVal = max(yprjC(:,:,1)) / sum2(yprjC(:,:,1));
+[ftCh, ftNs] = FT_addFeature(ftCh,ftVal,ftNs,'yprojC_max');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% needed features for distinguishing 
@@ -73,108 +84,45 @@ ftVal = st.Solidity;
 % very strong 4/5
 % NEED some strong bfeatures for - 2,1,3,7
 
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% mirroring
-% should be rotated straight
-% count of pixels in part of image compared to one another
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% subimages
-% auxilary anonnymous functions
-sh = @(s) ih/s;
-sw = @(s) iw/s;
-shF = @(s) floor(sh(s));
-swF = @(s) floor(sw(s));
-shC = @(s) ceil(sh(s));
-swC = @(s) ceil(sw(s));
-
-shSub = @(y,s) ((y-1)*shF(s)+1):(y)*shF(s) ;
-swSub = @(x,s) ((x-1)*swF(s)+1):(x)*swF(s) ;
-
-chimSub = @(y,x,s) chim(shSub(y,s), swSub(x,s));
-chimSub2 = @(y,sy,x,sx) chim(shSub(y,sy), swSub(x,sx));
-chimCent = @(s) chimSub(ceil(s/2),ceil(s/2),s);
-maxVal = 255;
-sum2 = @(m) double(sum(sum(m))) / maxVal;
-
-difSumToNum = @(im1,im2) (sum2(im1) - sum2(im2)) / double(numel(im2));
-sumToNum = @(im) double(sum2(im)) / double(numel(im));
-
-
-%% LEGEND
-% DS - diffSumToNum - difference of sum of pixels / numpx
-% % - most often the subimage is divided only in one axe -->
-% % ud - up to down where image is divided into halves
-% % lr - left to right where image is divided into halves
-% % 1u7d7 - first seventh of image to last seventh - in vertical
-% % 1l7r7 - first seventh of image to last seventh - in horizontal
-% S2N - sumToNum - sum of pixels / numpx
-% % ABCD = i.e 1911 
-% % % 19 take first ninth in height 
-% % % 11 take first 'oneth' in width - whole width
-% % AyB = i.e 1y9
-% % % take first ninth in height - y axe
-% % % this is the same as 1911
-% % cyAcxB = center of division by A in y, and center of div by B in x
-% % cA = center after division by A in both axes
-%% ninths
-im1 = chimSub2(1,9,1,1);
-ftVal = sumToNum(im1);
-[ftCh, ftNs] = FT_addFeature(ftCh,ftVal,ftNs,'S2N_1y9');
-
-%% up to down strip scale 
-im1 = chimSub2(1,7,1,1);
-im2 = chimSub2(7,7,1,1);
-ftVal = difSumToNum(im1,im2);
-[ftCh, ftNs] = FT_addFeature(ftCh,ftVal,ftNs,'DS_1u7d7');
-
-%% 2/3 - euler + 6/9
-
-%% r y quaters + 6
-
-%% l y quaters + 9
-
-
-%% rotation
+st = regionprops(chim, 'EulerNumber','Centroid','Solidity',...
+    'Perimeter','Orientation','MajorAxisLength','MinorAxisLength',...
+    'Extent','Extrema','Eccentricity','EquivDiameter','Area',...
+    'FilledImage','ConvexImage' );
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% ROTATE THEM BY ITS ORIENTATION FIRST
-%% 'Orientation' = major axis tilt
-% should be rotated straightalready
-ftVal = st.Orientation;
-% [ftCh, ftNs] = FT_addFeature(ftCh,ftVal,ftNs,'Orientation');
-chim = imresize(chim,2);
-chim = imrotate(chim, -ftVal);
+%% general features of character image
+% = all those fts which would differ for normal vs filled vs convex image
+% put them in separate function returning its features!
+[ftCh, ftNs] = FT_addBrilliantFeatureSet(chim,ftCh,ftNs);
 
 
-%% x halves
-im1 = chimSub2(1,1,1,2); 
-im2 = chimSub2(1,1,2,2); 
-ftVal = difSumToNum(im1,im2);
+    
+%% 'ConvexImage' 
+% chimConv = st.ConvexImage;
 
-[ftCh, ftNs] = FT_addFeature(ftCh,ftVal,ftNs,'DS_lr');
-%% y halves
-im1 = chimSub2(1,2,1,1); 
-im2 = chimSub2(2,2,1,1); 
-ftVal = difSumToNum(im1,im2);
-[ftCh, ftNs] = FT_addFeature(ftCh,ftVal,ftNs,'DS_ud');
+%% 'FilledImage' 
+% chimFill = st.FilledImage;
 
-%% center 0,8
-im = chimCent(5);
-ftVal = sumToNum(im);
-[ftCh, ftNs] = FT_addFeature(ftCh,ftVal,ftNs,'S2N_c5');
+%% 'Centroid' 
+% [position of centroid] vs [pos of centroid 'ConvexImage'/ closed char]
+% stConv = regionprops('Centroid');
 
-%% maj2minAxisLength
-ftVal = st.MajorAxisLength/st.MinorAxisLength;
-[ftCh, ftNs] = FT_addFeature(ftCh,ftVal,ftNs,'maj2minAxisLength');
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% other features of character image
 
-% bad 4?,7!,6!,5!
-for q=[1,2,4,6]
-% [top-left top-right right-top right-bottom bottom-right bottom-left left-bottom left-top]
-% [top-left top-right           right-bottom              bottom-left                     ]
-    ftVal = st.Extrema(q);
-    tit = sprintf('Extrema%i',q);
-    [ftCh, ftNs] = FT_addFeature(ftCh,ftVal,ftNs,tit);
-end
+%% Solidity
+% ratio pixels of char vs convex 
+ftVal = st.Solidity;
+[ftCh, ftNs] = FT_addFeature(ftCh,ftVal,ftNs,'Solidity');
+
+%% 'EulerNumber'
+%  the total number of objects in the image minus the total number of holes in those objects
+% ftVal = st.EulerNumber;
+% [ftCh, ftNs] = FT_addFeature(ftCh,ftVal,ftNs,'EulerNumber');
+% ftVal = st.EulerNumber+10;
+% [ftCh, ftNs] = FT_addFeature(ftCh,ftVal,ftNs,'EulerNumberP10');
+% WHY IT IS BAD FOR CLASSIFIER?
+
 
 
 %% houghlines
@@ -182,21 +130,6 @@ end
 
 %% projections
 
-%% 'Centroid' 
-% [position of centroid] vs [pos of centroid of convex / closed char]
-% !!!
-
-%% 'Perimeter' 
-
-%% 'Extent' 
-% ratio pixels of char vs bb
-% ratio "black to white pixels"
-
-%% 'Solidity' 
-% ratio pixels of char vs convex 
-% ../ closed
-
-%% 'MinorAxisLength' vs 'MajorAxisLength'
 % small
 % 1
 % ...
@@ -224,58 +157,12 @@ end
 % sice jsou otoèené rùznì ale to je ti jedno
 
 
-%% porovnání se vzorem
-siz = numel(font_chim);
-for q=1:siz
-    c = chim;
-    f = font_chim{q};
-    nml = numel(f);
-    
-    
-    if nml > numel(c)
-        % f is bigger -> make c bigger
-        c = imresize(c, size(f));
-    else
-        f = imresize(f, size(c));
-    end
-    
-    err = 0;
-    for e=1:nml
-        err = err + abs(f(e) - c(e));
-    end
-    err = err / nml;
-    ftVal = err;
-    tit = sprintf('err_pattern:%c',font_ch{q});
-    [ftCh, ftNs] = FT_addFeature(ftCh,ftVal,ftNs,tit);
-end
-
 %% momenty i vyssich radu
 
 %%
 %% vykreslit prubeh po jednotlivych featurach
 
 % individual region properties
-
-% ____________________________________________________
-% horizontal and vertical projection
-
-
-% xprjC,yprjC - projections of [lptC]
-norma = 0;
-xprjC = aux_projectDown(chim,               norma);
-yprjC = aux_projectDown(imrotate(chim,-90), norma);
-xprjCN = aux_projNorm(xprjC);
-yprjCN = aux_projNorm(yprjC);
-
-ftVal = median(xprjCN(:,:,1));
-[ftCh, ftNs] = FT_addFeature(ftCh,ftVal,ftNs,'xprojCN_med');
-ftVal = median(yprjCN(:,:,1));
-[ftCh, ftNs] = FT_addFeature(ftCh,ftVal,ftNs,'yprjCN_med');
-
-ftVal = max(xprjC(:,:,1)) / sum2(xprjC(:,:,1));
-[ftCh, ftNs] = FT_addFeature(ftCh,ftVal,ftNs,'xprojC_max');
-ftVal = max(yprjC(:,:,1)) / sum2(yprjC(:,:,1));
-[ftCh, ftNs] = FT_addFeature(ftCh,ftVal,ftNs,'yprojC_max');
 % 
 % % plot'em
 % aux_plotRgbs(xprjC, strcat('xprjC'), 0);
@@ -307,4 +194,18 @@ ftVal = max(yprjC(:,:,1)) / sum2(yprjC(:,:,1));
 %% end of function
 end
 
+
+
+
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% from now on we do not need the original proportions 
+
+% make a square from chim
+% if ih > iw
+%     siz = [ih,ih];
+% else
+%     siz = [iw,iw];
+% end
+% 
+% chim = imresize(chim, siz);
 

@@ -1,5 +1,8 @@
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% function FT_learnClassifiee()
+
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % CLEANING - delete when it works
 close all; clear; clc;
 
@@ -9,11 +12,15 @@ global disp2_level;
 disp2_level = 10;
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% get features
 F0_initials();
 
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% function FT_learnClassifiee()
-getChFts = 0
+if exist('features.mat','file')==0
+    getChFts = 1;
+else
+    getChFts = 0;
+end
+
 if getChFts==1
     disp2(1,'getChims Features');
     toSave = 1;
@@ -90,29 +97,7 @@ nMeas = size(meas,1);
 
 
 %% create training data and its group selectors
-
-disp2(1,sprintf('Create training data and its group selectors = classifiers'));
-chN = '1234567890';
-% DELETE THOSE WHO ARE NOT PRESENT IN DATABASE??
-% chA = 'ABCDEFGSTUVWXYZ'; 
-chA = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'; 
-
-%% alphanumeric
-chs = cat(2,chA,chN);
-[traAN , grpAN] = aux_createTrainingGroup(chs, meas, species);
-
-%% alpha
-chs = chA;
-[traA , grpA] = aux_createTrainingGroup(chs, meas, species);
-
-%% numeric
-chs = chA;
-[traN , grpN] = aux_createTrainingGroup(chs, meas, species);
-
-%% save train groups
-disp2(1,sprintf('Save ''learnt classifiers'' in ''classifier.mat'''));
-save('classifier','traAN','grpAN','traA','grpA','traN','grpN');
-
+[traAN, grpAN, traA , grpA, traN , grpN] = CREATE_trainingDataSets( meas, species);
 
 %% Linear and Quadratic Discriminant Analysis
 disp2(1,sprintf('Linear Discriminant Analysis'));
@@ -120,11 +105,20 @@ disp2(1,sprintf('Linear Discriminant Analysis'));
 disp2(2,sprintf('they see me classifiin'''));
 % learn alphanumeric classifier
 sample = meas;
-training = traAN;
-group = grpAN;
+% training = traAN;
+% group = grpAN;
+training = traA;
+group = grpA;
+training = traN;
+group = grpN;
 % training = meas;
 % group = species;
-ldaClass = classify(sample, training, group);
+% ____________________________________________________
+% classification
+% size(unique(training,'rows')), size(training)
+method = 'linear';
+% method = 'quadratic';
+ldaClass = classify(sample, training, group, method);
 
 %% Find out how good the classification went
 bad = ~strcmp(ldaClass,species);
@@ -133,6 +127,37 @@ ldaResubErr = bads / nMeas;
 
 disp2(2,sprintf('missclassified'));
 disp2(3,sprintf('[%d] samples = %f[%%] of all samples', bads, ldaResubErr*100));
+
+
+% %% find best proportion
+% for ii = 1:19;
+%     
+% sample = meas;
+% training = traAN;
+% group = grpAN;
+% 
+%    testProportion = (ii*5)/100;
+%    c = cvpartition(group, 'holdout',testProportion);
+%    trainData = myData(training(c,1),:);
+%    testData  = myData(sample(c,1),:);
+%    % Try your classifier here.
+%    
+%    
+% % method = 'quadratic';
+% ldaClass = classify(sample, training, group, method);
+% 
+% %% Find out how good the classification went
+% bad = ~strcmp(ldaClass,species);
+% bads = sum(bad);
+% ldaResubErr = bads / nMeas;
+% 
+% disp2(2,sprintf('missclassified'));
+% disp2(3,sprintf('[%d] samples = %f[%%] of all samples', bads, ldaResubErr*100));
+% disp2(3,sprintf('testProportion = %f[%%] of all samples',  testProportion*100));
+% 
+% end
+
+
 
 %% confusion - which measurements were badly classified
 if ldaResubErr ~= 0
@@ -151,7 +176,13 @@ F_I=F_I+1; FI_here=F_I; figure(FI_here);
 %     ...
 end
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 visualize = 0;
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% plane separation as an image 
 % with scattered real values
@@ -164,11 +195,7 @@ disp2(3,sprintf('printing bi-featural planes:'));
 %%
 % The function has separated the plane into regions divided by lines, and assigned different regions to different species.  One way to visualize these regions is to create a grid of (x,y) values and apply the classification function to that grid.
 
-% j = classify([x y],X_testing(:,iftSI),species);
-
-cols = 'rgbcmyk';
-shps = 'osdosd';
-nStep = 200;
+nStep = 300;
 
 nMeas = size(meas,2);
 % F_I=F_I+1; FI_here=F_I; figure(FI_here); SI = 0; SY = 2; SX = floor(nMeas/4);
@@ -181,48 +208,13 @@ for a=1:2:nMeas
         b=1;
     end
     disp2(4,sprintf('%s & %s',ftNames{a},ftNames{b}));
-    
+
 %% plane separation as an image
-    ix = a;
-    iy = b;
-    xmm=[ min(meas(:,ix)), max(meas(:,ix)) ];
-    ymm=[ min(meas(:,iy)), max(meas(:,iy)) ];
-    xint = linspace(xmm(1),xmm(2),nStep);
-    yint = linspace(ymm(1),ymm(2),nStep);
-    [x,y] = meshgrid(xint,yint);
-    x = x(:);
-    y = y(:);
-    mxy = meas(:,[ix,iy]);
-    j = classify([x y],mxy,species);
-    
-    im = zeros(length(xint),length(yint));
-    im(:) = j;
-    tit = sprintf('x = %d; y = %d',a,b);
-    aux_imprintS(im,tit)
-    colormap('hsv')
-    
-    hold on;
-    
-    
+    DISP_planeSeparation(meas,species,ftNames,a,b,nStep);
+    hold on;;
     %% scatter actual values
-    hold on
-%   transfer measure from actual values to image position
-    coef = (nStep -1) / (xmm(2)-xmm(1)) ;
-    ma = (meas(:,a) - xmm(1)) * coef + 0.5;
-    
-    coef = (nStep -1) / (ymm(2)-ymm(1)) ;
-    mb = (meas(:,b) - ymm(1)) * coef + 0.5;
-%   scat
-    gscatter(ma, mb, species, cols,shps);
-    legend('hide');
-    
-%     aux_nextSubplot();
-%     gscatter(x,y,j,cols,shps)
-%%
-    xlabel(ftNames(a));
-    ylabel(ftNames(b));
-    
-    axis tight
+    DISP_scatteredValues(meas,species,ftNames,a,b,nStep);
+    pause(.05);
 end
 legend('show');
 
@@ -235,6 +227,23 @@ colorbar('YTickLabel',...
 % classify(chftv,meas,species,'linear')
 end
 
+%%
+% a = 20;
+% b = 26;
+%     DISP_planeSeparation(meas,species,ftNames,a,b,nStep);
+%     hold on;;
+%     
+% a = 20;
+% b = 20;
+%     DISP_planeSeparation(meas,species,ftNames,a,b,nStep);
+%     hold on;;
+%     
+% a = 26;
+% b = 26;
+%     DISP_planeSeparation(meas,species,ftNames,a,b,nStep);
+%     hold on;;
+
+    
 %%
 % For some data sets, the regions for the various classes are not well
 % separated by lines. When that is the case, linear discriminant analysis
