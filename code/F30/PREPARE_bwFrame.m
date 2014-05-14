@@ -8,7 +8,7 @@ lptG = imadjust(lptG);
 
 % level from hsv(val)??
 lptHsv = rgb2hsv(lptRgb);
-level = graythresh(lptHsv(:,:,2));
+% level = graythresh(lptHsv(:,:,2));
 
 level = graythresh(lptG); % or otherwise
 % coef = 1.2;

@@ -49,7 +49,6 @@ if draw==1
 end
 disp2(1,sprintf('Counting features of all training chims'));
 for countChim = 1:tryNchim
-    disp2(2,sprintf('chim = %3d/%-3d',countChim,tryNchim));
     
     numChim = countChim;
 %     if whichLpt  == 1
@@ -89,7 +88,8 @@ for countChim = 1:tryNchim
 %     end
 
 %     disp2(3,sprintf('chim = %3d/%-3d',numChim,tryNchim));
-    disp2(3,sprintf('Should be %c',ch));
+    disp2(2,sprintf('chim = %3d/%-3d ==> should be [%c]',countChim,tryNchim,ch));
+%     disp2(3,sprintf('Should be %c',ch));
     if draw==1
         im = chim{numChim};
         aux_imprintS(im,ch);

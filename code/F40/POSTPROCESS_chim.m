@@ -1,6 +1,5 @@
 function [out] = POSTPROCESS_chim(chim)
-
-
+% postprocess chim
 
 %% remove margins = make clean chims
 s = regionprops(chim,'BoundingBox');

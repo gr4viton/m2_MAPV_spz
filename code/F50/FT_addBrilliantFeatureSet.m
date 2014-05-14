@@ -24,11 +24,13 @@ ftVal = st.Centroid(2) / ih;
 %% Perimeter
 ftVal = st.Perimeter/st.Area;
 [ftCh, ftNs] = FT_addFeature(ftCh,ftVal,ftNs,'Perimeter/sumpx');
+
 %% EquivDiameter
 ftVal = st.EquivDiameter;
 [ftCh, ftNs] = FT_addFeature(ftCh,ftVal,ftNs,'EquivDiameter');
 
 %% Eccentricity
+% Scalar that specifies the eccentricity of the ellipse that has the same second-moments as the region.
 ftVal = st.Eccentricity;
 [ftCh, ftNs] = FT_addFeature(ftCh,ftVal,ftNs,'Eccentricity');
 
@@ -95,11 +97,14 @@ ftVal = sumToNum(chim);
 ftVal = st.MajorAxisLength/st.MinorAxisLength;
 [ftCh, ftNs] = FT_addFeature(ftCh,ftVal,ftNs,'maj2minAxisLength');
 
+%% extrema creates duplicities 
+% -> makes training matrix not positive definite
+% = bad thing
 % bad 4?,7!,6!,5!
-for q=[1,2,4,6]
-% [top-left top-right right-top right-bottom bottom-right bottom-left left-bottom left-top]
-% [top-left top-right           right-bottom              bottom-left                     ]
-    ftVal = st.Extrema(q);
-    tit = sprintf('Extrema%i',q);
-    [ftCh, ftNs] = FT_addFeature(ftCh,ftVal,ftNs,tit);
-end
+% for q=[1,2,4,6]
+% % [top-left top-right right-top right-bottom bottom-right bottom-left left-bottom left-top]
+% % [top-left top-right           right-bottom              bottom-left                     ]
+%     ftVal = st.Extrema(q);
+%     tit = sprintf('Extrema%i',q);
+%     [ftCh, ftNs] = FT_addFeature(ftCh,ftVal,ftNs,tit);
+% end

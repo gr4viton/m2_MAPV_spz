@@ -84,24 +84,22 @@ ftVal = max(yprjC(:,:,1)) / sum2(yprjC(:,:,1));
 % very strong 4/5
 % NEED some strong bfeatures for - 2,1,3,7
 
-st = regionprops(chim, 'EulerNumber','Centroid','Solidity',...
-    'Perimeter','Orientation','MajorAxisLength','MinorAxisLength',...
-    'Extent','Extrema','Eccentricity','EquivDiameter','Area',...
-    'FilledImage','ConvexImage' );
+st = regionprops(chim, 'EulerNumber', 'Solidity', ...
+    'FilledImage', 'ConvexImage');
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% general features of character image
 % = all those fts which would differ for normal vs filled vs convex image
 % put them in separate function returning its features!
 [ftCh, ftNs] = FT_addBrilliantFeatureSet(chim,ftCh,ftNs);
-
-
     
 %% 'ConvexImage' 
-% chimConv = st.ConvexImage;
+chimConv = st.ConvexImage;
+% [ftCh, ftNs] = FT_addBrilliantFeatureSet(chimConv,ftCh,ftNs);
 
 %% 'FilledImage' 
-% chimFill = st.FilledImage;
+chimFill = st.FilledImage;
+% [ftCh, ftNs] = FT_addBrilliantFeatureSet(chimFill,ftCh,ftNs);
 
 %% 'Centroid' 
 % [position of centroid] vs [pos of centroid 'ConvexImage'/ closed char]

@@ -14,6 +14,9 @@ end
 for q=1:nCh
     s = regionprops(chimNO{q},'Centroid');
 %     s.Centroid
+    if isempty(s)
+        break
+    end
     cent(1:2,q) = s.Centroid;
     cent(3,q) = q;
     % cent = x,y
