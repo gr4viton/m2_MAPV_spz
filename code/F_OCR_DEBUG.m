@@ -180,16 +180,16 @@ coef = q/10 - 1;
 off = 10*coef;
 gpLpt = (1:10) + off;
 %% 
-gpLpt = 1:50;
-gpLpt = 51:100;
+% gpLpt = 1:50;
+% gpLpt = 51:100;
 % gpLpt = [gbSegmentBad{:}];
 
 %% take only first num of gpLpts
 nml = numel(gpLpt);
-% num = 5;
+num = 5;
 % num = 10;
 
-num = 100;
+% num = 100;
 if num>nml
     num = nml;
 end
@@ -227,7 +227,7 @@ end
 
 % all the [chim]s of processed lpts
 chimzy = [];
-
+nSubplots = 3;
 % better for lpt = [u->d] -> [l->r] 
 F_I=F_I+1; FI_here=F_I; figure(FI_here); SI = 0; SY = nSubplots; SX = sumLpt;
 set(gcf,'units','normalized','outerposition',[0 0 1 1])
@@ -253,7 +253,6 @@ if exist(nam,'file') == 0
     [traAN, grpAN, traA , grpA, traN , grpN] = CREATE_trainingDataSets( meas, species);
 end
 load(nam);
-
 
 % load font examples for feature creation
 global font_chim;
